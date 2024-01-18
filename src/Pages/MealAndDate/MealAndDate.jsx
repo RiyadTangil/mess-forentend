@@ -120,7 +120,7 @@ const MealAndDate = () => {
   return (
     <div className="meal-container">
       <div className="card">
-        <h1 className="header">Place Mealand => {currentUserId}</h1>
+        <h1 className="header">Place Mealand  {currentUserId}</h1>
         <p className="date">Date: {date}</p>
         <div className="checkboxes">
           <label>
