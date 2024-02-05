@@ -10,11 +10,11 @@ import ProtectedRoute from "./Pages/Auth/ProtectedRoute";
 import Login from "./Pages/Login/Login";
 import { Toaster } from "react-hot-toast";
 import Users from "./Pages/Users/Users";
+import MealsDashboard from "./Pages/Meals/Meals";
 
 function App() {
   return (
     <>
-      {" "}
       <Toaster />
       <Router>
         <Routes>
@@ -30,20 +30,10 @@ function App() {
             path="/meal-and-date"
             element={<ProtectedRoute component={<MealAndDate />} />}
           />
-
-          {/* Protected route: MealAndDate */}
-          {/* <ProtectedRoute
-          path="/meal-and-date"
-          element={<MealAndDate />}
-          redirectTo="/register"
-        /> */}
-
-          {/* Default route: Redirect to /meal-and-date if authenticated, otherwise to /register */}
-          {/* <ProtectedRoute
-          path="/"
-          element={<Navigate to="/meal-and-date" replace />}
-          redirectTo="/register"
-        /> */}
+          <Route
+            path="/meals"
+            element={<ProtectedRoute component={<MealsDashboard />} />}
+          />
         </Routes>
       </Router>
     </>

@@ -21,7 +21,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import AddIcon from "@material-ui/icons/Add";
 import toast, { useToaster } from "react-hot-toast";
-
+import "../MealAndDate/MealAndDate.css";
 interface UserData {
   _id: string;
   name: string;
@@ -44,7 +44,7 @@ const Users: React.FC = () => {
   const fetchData = async () => {
     try {
       // Retrieve mess ID from local storage
-      const userData = JSON.parse(localStorage.getItem("userData") ?? "");
+      const userData = JSON.parse(localStorage.getItem("messInfo") ?? "");
       const messId = userData ? userData.mess_id : null;
       console.log("messId => ", messId);
       if (!messId) {
@@ -141,6 +141,7 @@ const Users: React.FC = () => {
       <div
         style={{
           display: "flex",
+
           justifyContent: "flex-end",
           marginBottom: "16px",
         }}

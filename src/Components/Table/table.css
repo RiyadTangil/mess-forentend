@@ -1,10 +1,4 @@
 /* MealAndDate.css */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: "Arial", sans-serif;
-  background-color: #f5f5f5;
-}
 
 .meal-container {
   display: flex;
@@ -113,24 +107,24 @@ button:hover {
   overflow-y: auto;
 }
 
-table {
+.table-container table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
 }
 
-th,
-td {
+.table-container th,
+.table-container td {
   border: 1px solid #eaeaea;
   padding: 10px;
   text-align: center;
 }
 
-th {
+.table-container th {
   background-color: #3498db;
   color: #fff;
 }
 
-tbody tr:hover {
+.table-container tbody tr:hover {
   background-color: #f5f5f5;
 }

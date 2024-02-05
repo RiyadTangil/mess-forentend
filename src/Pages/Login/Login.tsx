@@ -41,7 +41,7 @@ const Login: React.FC = () => {
       // Decrypt the data (you might have your own decryption logic)
       // For demonstration purposes, we'll just use the received data as is
       // Note: Ensure to use secure storage methods in a real-world scenario
-      localStorage.setItem("userData", JSON.stringify(data));
+      localStorage.setItem("messInfo", JSON.stringify(data));
 
       // Clear any previous error messages
       setErrorMessage("");
