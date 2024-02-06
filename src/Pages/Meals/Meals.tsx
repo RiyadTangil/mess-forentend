@@ -20,30 +20,10 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import EditIcon from "@mui/icons-material/Edit";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import { rootDomain } from "../../API/API";
+import { getMessInfoFromLocalHost } from "../../helperFunctions";
+import { MealsApiResponse, UserInfo } from "../../Types";
 
-interface UserInfo {
-  _id: string;
-  name: string;
-  meals: {
-    choices: {
-      breakfast: number;
-      lunch: number;
-      dinner: number;
-    };
-    date: string;
-  }[];
-}
-
-interface MealsApiResponse {
-  statusCode: number;
-  success: boolean;
-  message: string;
-  data: {
-    _id: string;
-    name: string;
-    users: UserInfo[];
-  };
-}
 
 const MealsDashboard: React.FC = () => {
   const [mealsData, setMealsData] = useState<MealsApiResponse | null>(null);
@@ -55,8 +35,9 @@ const MealsDashboard: React.FC = () => {
   useEffect(() => {
     const fetchMealsData = async () => {
       try {
+        const messInfo = getMessInfoFromLocalHost();
         const response = await fetch(
-          "http://localhost:5000/api/v1/meal/getMealsByMessId/65c035d2288f544b53433075"
+          rootDomain + "/meal/getMealsByMessId/" + messInfo.mess_id
         );
         const data: MealsApiResponse = await response.json();
         setMealsData(data);
@@ -86,6 +67,7 @@ const MealsDashboard: React.FC = () => {
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
+
   const calculateTotalMeals = (meals: UserInfo["meals"]) => {
     let totalMeals = 0;
     let totalBreakfast = 0;
@@ -104,15 +86,20 @@ const MealsDashboard: React.FC = () => {
       <>
         <Typography variant="body2">
           Breakfast: {totalBreakfast} | Lunch: {totalLunch} | Dinner:{" "}
-          {totalDinner}   | Total Meals: {totalMeals}
+          {totalDinner} | Total Meals: {totalMeals}
         </Typography>
       </>
     );
   };
-  const calculateTodayMeals = (users: UserInfo[]) => {
+  const calculateTodayMeals = (users: UserInfo[] | undefined) => {
+    if (!users) return null;
     let todayBreakfast = 0;
     let todayLunch = 0;
     let todayDinner = 0;
+    let allUsersBreakfast = 0;
+    let allUsersLunch = 0;
+    let allUsersDinner = 0;
+    let allUsersMeals = 0;
 
     const today = new Date().toISOString().split("T")[0];
 
@@ -123,31 +110,50 @@ const MealsDashboard: React.FC = () => {
           todayLunch += meal.choices.lunch;
           todayDinner += meal.choices.dinner;
         }
+        allUsersBreakfast += meal.choices.breakfast;
+        allUsersLunch += meal.choices.lunch;
+        allUsersDinner += meal.choices.dinner;
       }
     }
 
-    return {
-      todayBreakfast,
-      todayLunch,
-      todayDinner,
-    };
+    return (
+      <>
+        <Card sx={{ mb: 2 }}>
+          <CardContent>
+            <Typography variant="h6">Total Meals of All Users</Typography>
+            <Typography variant="body2">
+              Total Meals:{" "}
+              {allUsersBreakfast / 2 + allUsersLunch + allUsersDinner} |
+              Breakfast: {allUsersBreakfast} | Lunch: {allUsersLunch} | Dinner:{" "}
+              {allUsersDinner}
+            </Typography>
+          </CardContent>
+          <CardContent>
+            <Typography variant="h6">Today's Meals of All Users</Typography>
+            <Typography variant="body2">
+              Breakfast: {todayBreakfast} | Lunch: {todayLunch}| Dinner:{" "}
+              {todayDinner}
+            </Typography>
+          </CardContent>
+        </Card>
+      </>
+    );
   };
   return (
     <div>
-      <Card sx={{ mb: 2 }}>
+      {calculateTodayMeals(mealsData?.data?.users)}
+      {/* <Card sx={{ mb: 2 }}>
         <CardContent>
           <Typography variant="h6">Total Meals of All Users</Typography>
           <Typography variant="body2">
-            Total Meals: 44 | Breakfast: 8 | Lunch: 7 | Dinner: 9
+            Total Meals: {allUsersMeals} | Breakfast: {allUsersBreakfast} |
+            Lunch: {allUsersLunch}| Dinner: {allUsersDinner}
           </Typography>
         </CardContent>
         <CardContent>
           <Typography variant="h6">Today's Meals of All Users</Typography>
-          <Typography variant="body2">
-            Breakfast: 7 | Lunch: 4| Dinner: 4
-          </Typography>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {mealsData?.data.users.map((user) => (
         <div key={user._id}>

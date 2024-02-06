@@ -22,6 +22,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import AddIcon from "@material-ui/icons/Add";
 import toast, { useToaster } from "react-hot-toast";
 import "../MealAndDate/MealAndDate.css";
+import { rootDomain } from "../../API/API";
 interface UserData {
   _id: string;
   name: string;
@@ -53,9 +54,7 @@ const Users: React.FC = () => {
       }
       setMessId(messId);
 
-      const response = await axios.get(
-        `http://localhost:5000/api/v1/mess/${messId}`
-      );
+      const response = await axios.get(rootDomain + `/mess/${messId}`);
 
       setUserData(response.data.data.users);
     } catch (error) {
@@ -80,7 +79,7 @@ const Users: React.FC = () => {
 
   const handleDeleteUser = async (userId: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/v1/users/${userId}`);
+      await axios.delete(rootDomain + `/users/${userId}`);
       const updatedUsers = userData.filter((user) => user._id !== userId);
       setUserData(updatedUsers);
       toast.success("User deleted successfully!");
@@ -108,15 +107,12 @@ const Users: React.FC = () => {
     try {
       let response;
       if (editingUser) {
-        response = await axios.put(
-          `http://localhost:5000/api/v1/users/${editingUser._id}`,
+        response = await axios.patch(
+          rootDomain + `/users/${editingUser._id}`,
           requestData
         );
       } else {
-        response = await axios.post(
-          "http://localhost:5000/api/v1/users/signup",
-          requestData
-        );
+        response = await axios.post(rootDomain + "/users/signup", requestData);
       }
 
       const updatedUsers = editingUser

@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { rootDomain } from "../../API/API";
 
 interface FormData {
   number: string;
@@ -30,10 +31,7 @@ const Login: React.FC = () => {
 
     try {
       // API Request
-      const response = await axios.post(
-        "http://localhost:5000/api/v1/auth/login",
-        formData
-      );
+      const response = await axios.post(rootDomain + "/auth/login", formData);
 
       // Handle the API response
       const { refreshToken, accessToken, data } = response.data.data;

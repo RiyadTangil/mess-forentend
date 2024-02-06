@@ -4,6 +4,7 @@ import jsonwebtoken from "jsonwebtoken";
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { rootDomain } from "../../API/API";
 
 interface FormData {
   name: string;
@@ -49,12 +50,12 @@ const RegisterPage: React.FC = () => {
     try {
       // API Request
       const response = await axios.post(
-        "http://localhost:5000/api/v1/mess/create-mess",
+        rootDomain + "/mess/create-mess",
         formData
       );
 
       // Handle the API response
-      const { refreshToken, accessToken, data} = response.data.data;
+      const { refreshToken, accessToken, data } = response.data.data;
       // console.log(response.data.data);
       // const decodedToken: any = jsonwebtoken.decode(accessToken);
       // console.log(decodedToken,"decodedToken");
