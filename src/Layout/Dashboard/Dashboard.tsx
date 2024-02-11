@@ -105,6 +105,7 @@ export default function Dashboard() {
 
   const routes = [
     { text: "Inbox", path: "/meal-and-date", icon: <InboxIcon /> },
+    { text: "Add Meals", path: "/add-meals", icon: <MailIcon /> },
     { text: "Starred", path: "/users", icon: <MailIcon /> },
     { text: "Meals Dashboard", path: "/meals", icon: <MailIcon /> },
     // { text: 'Drafts', path: '/drafts', icon: <DraftsIcon /> },

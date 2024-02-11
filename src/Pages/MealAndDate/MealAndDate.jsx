@@ -13,8 +13,8 @@ const MealAndDate = () => {
     lunch: 0,
     dinner: 0,
   };
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [userChoices, setUserChoices] = useState(initialChoice);
+  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [previousMyDates, setMyDates] = useState([]);
 
   const [rqsId, setRqsId] = useState(0);
@@ -30,6 +30,7 @@ const MealAndDate = () => {
   useEffect(() => {
     const messInfo = getMessInfoFromLocalHost();
     setCurrentUserId(messInfo.userId);
+  
     setMessId(messInfo.mess_id);
 
     const fetchData = async () => {
