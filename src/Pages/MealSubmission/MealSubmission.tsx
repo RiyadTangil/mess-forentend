@@ -2,30 +2,34 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { getMessInfoFromLocalHost } from "../../helperFunctions";
+import { rootDomain } from "../../API/API";
 
 interface User {
   _id: string;
   name: string;
 }
 
-interface MealChoice {
-  breakfast: number;
-  lunch: number;
-  dinner: number;
+interface Meal {
+  choices: Record<string, number>;
+  _id: string;
+  date: string;
+  user: string;
+  mess: string;
 }
 
 interface MessData {
   _id: string;
   users: User[];
+  meals: Meal[];
 }
 
 const MealSubmission: React.FC = () => {
   const [messData, setMessData] = useState<MessData | null>(null);
-  const [todayMealExistUsers, setTodayMealExistUsers] = useState<
-    Record<string, string>
+  const [mealChoices, setMealChoices] = useState<
+    Record<string, Meal["choices"]>
   >({});
-  const [mealChoices, setMealChoices] = useState<Record<string, MealChoice>>(
-    {}
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date().toISOString().slice(0, 10)
   );
 
   useEffect(() => {
@@ -35,26 +39,18 @@ const MealSubmission: React.FC = () => {
         if (!messInfo) throw new Error("Mess ID not found in localStorage");
 
         const response = await axios.get(
-          `http://localhost:5000/api/v1/meal/getMealsByMessId/${messInfo.mess_id}`
+          rootDomain +
+            `/meal/getMealsByMessIdAndDate/${messInfo.mess_id}?date=${selectedDate}`
         );
         const res = response.data.data;
         setMessData(res);
-        const todayDate = new Date().toISOString().slice(0, 10);
-        const initialMealChoices: Record<string, MealChoice> = {};
+        const initialMealChoices: Record<string, Meal["choices"]> = {};
         res.users.forEach((user) => {
-          if (user?.meals[0]?.date === todayDate) {
-            setTodayMealExistUsers((prevID) => {
-              return { ...prevID, [user._id]: user.meals[0]._id };
-            });
-
-            initialMealChoices[user._id] = user.meals[0].choices;
-          } else {
-            initialMealChoices[user._id] = {
-              breakfast: 0,
-              lunch: 0,
-              dinner: 0,
-            };
-          }
+          initialMealChoices[user._id] = user.meals[0]?.choices || {
+            breakfast: 0,
+            lunch: 0,
+            dinner: 0,
+          };
         });
         setMealChoices(initialMealChoices);
       } catch (error) {
@@ -64,9 +60,9 @@ const MealSubmission: React.FC = () => {
     };
 
     fetchMessData();
-  }, []);
+  }, [selectedDate]);
 
-  const handleIncrement = (userId: string, mealType: keyof MealChoice) => {
+  const handleIncrement = (userId: string, mealType: keyof Meal["choices"]) => {
     setMealChoices((prevChoices) => ({
       ...prevChoices,
       [userId]: {
@@ -76,7 +72,7 @@ const MealSubmission: React.FC = () => {
     }));
   };
 
-  const handleDecrement = (userId: string, mealType: keyof MealChoice) => {
+  const handleDecrement = (userId: string, mealType: keyof Meal["choices"]) => {
     setMealChoices((prevChoices) => ({
       ...prevChoices,
       [userId]: {
@@ -94,18 +90,21 @@ const MealSubmission: React.FC = () => {
       toast.loading("Submitting meal choices...");
       const requests = Object.entries(mealChoices).map(
         async ([userId, mealChoice]) => {
-          if (todayMealExistUsers.hasOwnProperty(userId)) {
-            await axios.patch(
-              `http://localhost:5000/api/v1/meal/${todayMealExistUsers[userId]}`,
-              { choices: mealChoice }
-            );
-          } else
-            await axios.post("http://localhost:5000/api/v1/meal/create-meal", {
-              date: new Date().toISOString().slice(0, 10),
+          const todayMeal = messData?.meals?.find(
+            (meal) => meal.date === selectedDate && meal.user === userId
+          );
+          if (todayMeal) {
+            await axios.patch(rootDomain + `/meal/${todayMeal._id}`, {
+              choices: mealChoice,
+            });
+          } else {
+            await axios.post(rootDomain + "/meal/create-meal", {
+              date: selectedDate,
               choices: mealChoice,
               user: userId,
               mess: messData?._id,
             });
+          }
         }
       );
       await Promise.all(requests);
@@ -118,13 +117,18 @@ const MealSubmission: React.FC = () => {
     }
   };
 
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedDate(event.target.value);
+  };
+
   if (!messData) {
     return <div>Loading...</div>;
   }
 
   return (
     <div>
-      <h2>{new Date().toISOString().slice(0, 10)}</h2>
+      <input type="date" value={selectedDate} onChange={handleDateChange} />
+      <h2>{selectedDate}</h2>
       <table>
         <thead>
           <tr>

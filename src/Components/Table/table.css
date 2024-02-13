@@ -90,7 +90,7 @@ button:hover {
 }
 
 .table-container {
-  width: 80%;
+  /* width: 80%; */
   margin: 0 auto;
   overflow-x: auto;
 }
@@ -98,7 +98,7 @@ button:hover {
 .table-card {
   border: 1px solid #eaeaea;
   border-radius: 10px;
-  width: 70vw;
+  /* width: 70vw; */
   max-height: 500px; /* Set a maximum height for scrollability */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 20px;

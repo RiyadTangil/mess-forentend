@@ -20,13 +20,19 @@ import {
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import AddIcon from "@material-ui/icons/Add";
-import toast, { useToaster } from "react-hot-toast";
-import "../MealAndDate/MealAndDate.css";
+import toast from "react-hot-toast";
 import { rootDomain } from "../../API/API";
+interface DepositWithdraw {
+  date: string;
+  amount: number;
+}
+
 interface UserData {
   _id: string;
   name: string;
   number: string;
+  deposit?: DepositWithdraw[];
+  withdraw?: DepositWithdraw[];
 }
 
 const Users: React.FC = () => {
@@ -36,15 +42,16 @@ const Users: React.FC = () => {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
   const [mess_id, setMessId] = useState("");
+  const [deposit, setDeposit] = useState<DepositWithdraw[]>([]);
+  const [withdraw, setWithdraw] = useState<DepositWithdraw[]>([]);
+  const [today] = useState(new Date().toISOString().slice(0, 10));
 
   useEffect(() => {
-    // Fetch user data from the backend or local storage
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
-      // Retrieve mess ID from local storage
       const userData = JSON.parse(localStorage.getItem("messInfo") ?? "");
       const messId = userData ? userData.mess_id : null;
       console.log("messId => ", messId);
@@ -65,6 +72,8 @@ const Users: React.FC = () => {
   const handleAddUser = () => {
     setName("");
     setNumber("");
+    setDeposit([]);
+    setWithdraw([]);
     setEditingUser(null);
     setDrawerOpen(true);
   };
@@ -72,6 +81,8 @@ const Users: React.FC = () => {
   const handleEditUser = (user: UserData) => {
     setName(user.name);
     setNumber(user.number);
+    setDeposit(user.deposit ?? []);
+    setWithdraw(user.withdraw ?? []);
 
     setEditingUser(user);
     setDrawerOpen(true);
@@ -93,34 +104,64 @@ const Users: React.FC = () => {
     setDrawerOpen(false);
     setName("");
     setNumber("");
+    setDeposit([]);
+    setWithdraw([]);
   };
 
   const handleSubmit = async () => {
+    // Create copies of deposit and withdraw arrays
+    let filteredDeposit = [...deposit];
+    let filteredWithdraw = [...withdraw];
+    
+    // Iterate over deposit array to remove objects with amount equal to 0
+    for (let i = 0; i < filteredDeposit.length; i++) {
+      
+      if (!filteredDeposit[i].amount) {
+        filteredDeposit.splice(i, 1); // Remove the object at index i
+        i--; // Decrement i to adjust for the removed object
+      }
+    }
+  
+    // Iterate over withdraw array to remove objects with amount equal to 0
+    for (let i = 0; i < filteredWithdraw.length; i++) {
+      if (!filteredWithdraw[i].amount) {
+        filteredWithdraw.splice(i, 1); // Remove the object at index i
+        i--; // Decrement i to adjust for the removed object
+      }
+    }
+  
     const requestData = {
       name,
       number,
       password: number,
       role: "user",
       mess_id,
+      deposit: filteredDeposit,
+      withdraw: filteredWithdraw,
     };
-
+  
     try {
       let response;
       if (editingUser) {
-        response = await axios.patch(
-          rootDomain + `/users/${editingUser._id}`,
-          requestData
-        );
+        // Remove _id from deposit and withdraw with same date and amount
+        const updatedDeposit = filteredDeposit.map((d) => ({ ...d, _id: undefined }));
+        const updatedWithdraw = filteredWithdraw.map((w) => ({ ...w, _id: undefined }));
+  
+        response = await axios.patch(rootDomain + `/users/${editingUser._id}`, {
+          ...requestData,
+          deposit: updatedDeposit,
+          withdraw: updatedWithdraw,
+        });
       } else {
         response = await axios.post(rootDomain + "/users/signup", requestData);
       }
-
+  
       const updatedUsers = editingUser
         ? userData.map((user) =>
             user._id === editingUser._id ? response.data.data : user
           )
         : [...userData, response.data.data];
-
+  
       setUserData(updatedUsers);
       setDrawerOpen(false);
       toast.success(
@@ -131,13 +172,39 @@ const Users: React.FC = () => {
       toast.error("Error adding/updating user. Please try again.");
     }
   };
+  
+
+  const handleDepositChange = (index: number, key: string, value: string) => {
+    const updatedDeposit = [...deposit];
+    updatedDeposit[index] = {
+      ...updatedDeposit[index],
+      [key]: parseFloat(value),
+    };
+    setDeposit(updatedDeposit);
+  };
+
+  const handleWithdrawChange = (index: number, key: string, value: string) => {
+    const updatedWithdraw = [...withdraw];
+    updatedWithdraw[index] = {
+      ...updatedWithdraw[index],
+      [key]: parseFloat(value),
+    };
+    setWithdraw(updatedWithdraw);
+  };
+
+  const addDepositOrWithdraw = (type: "deposit" | "withdraw") => {
+    if (type === "deposit") {
+      setDeposit([...deposit, { date: today, amount: 0 }]);
+    } else {
+      setWithdraw([...withdraw, { date: today, amount: 0 }]);
+    }
+  };
 
   return (
     <>
       <div
         style={{
           display: "flex",
-
           justifyContent: "flex-end",
           marginBottom: "16px",
         }}
@@ -152,35 +219,41 @@ const Users: React.FC = () => {
         </Button>
       </div>
       <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Number</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {userData.map((user) => (
-              <TableRow key={user._id}>
-                <TableCell>{user.name}</TableCell>
-                <TableCell>{user.number}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleEditUser(user)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => handleDeleteUser(user._id)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+  <Table>
+    <TableHead>
+      <TableRow>
+        <TableCell>Name</TableCell>
+        <TableCell>Number</TableCell>
+        <TableCell>Deposited</TableCell> {/* New column */}
+        <TableCell>Actions</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {userData.map((user) => (
+        <TableRow key={user._id}>
+          <TableCell>{user.name}</TableCell>
+          <TableCell>{user.number}</TableCell>
+          <TableCell>
+            {/* Calculate the total deposited amount */}
+            {user.deposit?.reduce((total, deposit) => total + deposit.amount, 0) -
+              (user.withdraw?.reduce((total, withdraw) => total + withdraw.amount, 0) || 0)}
+          </TableCell>
+          <TableCell>
+            <IconButton onClick={() => handleEditUser(user)}>
+              <EditIcon />
+            </IconButton>
+            <IconButton onClick={() => handleDeleteUser(user._id)}>
+              <DeleteIcon />
+            </IconButton>
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</TableContainer>
 
       <Drawer anchor="right" open={isDrawerOpen} onClose={handleDrawerClose}>
-        <div style={{ padding: "20px", width: "300px" }}>
+        <div style={{ padding: "20px", width: "400px" }}>
           <h2>{editingUser ? "Edit User" : "Add User"}</h2>
           <TextField
             label="Name"
@@ -198,9 +271,68 @@ const Users: React.FC = () => {
             value={number}
             onChange={(e) => setNumber(e.target.value)}
           />
-          <Button variant="contained" color="primary" onClick={handleSubmit}>
-            {editingUser ? "Update" : "Add"}
-          </Button>
+          <div
+            style={{
+              display: deposit.length ? "" : withdraw.length ? "" : "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            {deposit.map((item, index) => (
+              <div key={index}>
+                <TextField
+                  label={`Deposit Amount (${item.date})`}
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  value={item.amount || 0}
+                  onChange={(e) =>
+                    handleDepositChange(index, "amount", e.target.value)
+                  }
+                />
+              </div>
+            ))}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => addDepositOrWithdraw("deposit")}
+            >
+              Deposit
+            </Button>
+
+            {withdraw.map((item, index) => (
+              <div key={index}>
+                <TextField
+                  label={`Withdraw Amount (${item.date})`}
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  value={item.amount || 0}
+                  onChange={(e) =>
+                    handleWithdrawChange(index, "amount", e.target.value)
+                  }
+                />
+              </div>
+            ))}
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ marginLeft: withdraw.length ? "" : "20px" }}
+              onClick={() => addDepositOrWithdraw("withdraw")}
+            >
+              Withdraw
+            </Button>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "20px",
+            }}
+          >
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
+              {editingUser ? "Update" : "Add"}
+            </Button>
+          </div>
         </div>
       </Drawer>
     </>
@@ -208,3 +340,74 @@ const Users: React.FC = () => {
 };
 
 export default Users;
+
+//another design fo drawer
+
+//     <Drawer anchor="right" open={isDrawerOpen} onClose={handleDrawerClose}>
+//   <div style={{ padding: "20px", width: "400px", display: "flex", flexDirection: "column" }}>
+//     <h2>{editingUser ? "Edit User" : "Add User"}</h2>
+//     <TextField
+//       label="Name"
+//       variant="outlined"
+//       fullWidth
+//       margin="normal"
+//       value={name}
+//       onChange={(e) => setName(e.target.value)}
+//     />
+//     <TextField
+//       label="Number"
+//       variant="outlined"
+//       fullWidth
+//       margin="normal"
+//       value={number}
+//       onChange={(e) => setNumber(e.target.value)}
+//     />
+//     <div style={{ display: "flex", justifyContent: "space-between" }}>
+//       <div>
+//         {deposit.map((item, index) => (
+//           <div key={index}>
+//             <TextField
+//               label={`Deposit Amount (${item.date})`}
+//               variant="outlined"
+//               margin="normal"
+//               value={item.amount}
+//               onChange={(e) => handleDepositChange(index, "amount", e.target.value)}
+//             />
+//           </div>
+//         ))}
+//         <Button
+//           variant="contained"
+//           color="primary"
+//           onClick={() => addDepositOrWithdraw("deposit")}
+//         >
+//           Add Deposit
+//         </Button>
+//       </div>
+//       <div>
+//         {withdraw.map((item, index) => (
+//           <div key={index}>
+//             <TextField
+//               label={`Withdraw Amount (${item.date})`}
+//               variant="outlined"
+//               margin="normal"
+//               value={item.amount}
+//               onChange={(e) => handleWithdrawChange(index, "amount", e.target.value)}
+//             />
+//           </div>
+//         ))}
+//         <Button
+//           variant="contained"
+//           color="primary"
+//           onClick={() => addDepositOrWithdraw("withdraw")}
+//         >
+//           Add Withdraw
+//         </Button>
+//       </div>
+//     </div>
+//     <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+//       <Button variant="contained" color="primary" onClick={handleSubmit}>
+//         {editingUser ? "Update" : "Add"}
+//       </Button>
+//     </div>
+//   </div>
+// </Drawer>

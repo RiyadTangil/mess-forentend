@@ -1,7 +1,8 @@
 // ProtectedRoute.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Navigate } from "react-router-dom";
 import Dashboard from "../../Layout/Dashboard/Dashboard";
+import BottomNavigation from "../../Components/BottomNavigation/BottomNavigation";
 
 interface ProtectedRouteProps {
   component: React.ReactNode;
@@ -20,10 +21,30 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
   };
+  //Mobile View Check
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Adjust the breakpoint as needed
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Initial check
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   return isAuthenticated ? (
     <>
-      <Dashboard />
-      {component}
+      {isMobile ? (
+        <BottomNavigation component={component} />
+      ) : (
+        <>
+          <Dashboard />
+          {component}
+        </>
+      )}
     </>
   ) : (
     <Navigate to={"/register"} replace />

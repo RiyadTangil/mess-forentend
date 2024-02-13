@@ -26,7 +26,10 @@ function App() {
             path="/users"
             element={<ProtectedRoute component={<Users />} />}
           />
-          <Route path="/" element={<Login />} />
+          <Route
+            path="/"
+            element={<ProtectedRoute component={<MealAndDate />} />}
+          />
           <Route
             path="/meal-and-date"
             element={<ProtectedRoute component={<MealAndDate />} />}

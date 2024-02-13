@@ -111,7 +111,7 @@ export default function Dashboard() {
     // { text: 'Drafts', path: '/drafts', icon: <DraftsIcon /> },
   ];
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex",paddingBottom:"50px" }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
