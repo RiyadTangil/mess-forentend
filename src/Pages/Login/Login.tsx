@@ -43,7 +43,7 @@ const Login: React.FC = () => {
 
       // Clear any previous error messages
       setErrorMessage("");
-      navigate("/meal-and-date");
+      navigate("/add-meals");
     } catch (error) {
       // Handle errors, e.g., invalid credentials
       setErrorMessage("Invalid credentials. Please try again.");

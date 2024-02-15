@@ -143,11 +143,11 @@ const MealSubmission: React.FC = () => {
             <tr key={user._id}>
               <td>{user.name}</td>
               <td>
-                <button onClick={() => handleDecrement(user._id, "breakfast")}>
+                <button style={{width:"5px",}} onClick={() => handleDecrement(user._id, "breakfast")}>
                   -
                 </button>
                 {mealChoices[user._id].breakfast}
-                <button onClick={() => handleIncrement(user._id, "breakfast")}>
+                <button style={{width:"5px",}}  onClick={() => handleIncrement(user._id, "breakfast")}>
                   +
                 </button>
               </td>

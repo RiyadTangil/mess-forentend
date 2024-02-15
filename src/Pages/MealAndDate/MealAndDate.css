@@ -10,7 +10,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
+  /* min-height: 100vh; */
+  width: 100%;
   justify-content: center;
 }
 .drawer-content{
@@ -23,7 +24,7 @@ body {
   padding: 20px;
   margin: 20px;
   background-color: #ffffff;
-  /* width: 80%; */
+
   max-width: 400px;
   text-align: center;
 }
@@ -106,13 +107,13 @@ button:hover {
 .table-card {
   border: 1px solid #eaeaea;
   border-radius: 10px;
-  /* width: 70vw; */
+  width: 90vw;
   max-height: 500px; /* Set a maximum height for scrollability */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
   background-color: #ffffff;
   margin-top: 20px;
   overflow-y: auto;
+  
 }
 
 table {

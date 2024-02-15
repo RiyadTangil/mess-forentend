@@ -69,7 +69,7 @@ const RegisterPage: React.FC = () => {
 
       // Clear any warning message
       setWarningMessage("");
-      navigate("/meal-and-date");
+      navigate("/add-meals");
     } catch (error) {
       // Handle errors, e.g., if the phone number already exists
       setWarningMessage("Phone number already exists.");

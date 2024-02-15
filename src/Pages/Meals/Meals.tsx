@@ -174,7 +174,7 @@ const MealsDashboard: React.FC = () => {
                     <TableCell>Breakfast</TableCell>
                     <TableCell>Lunch</TableCell>
                     <TableCell>Dinner</TableCell>
-                    <TableCell>Action</TableCell>
+                    {/* <TableCell>Action</TableCell> */}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -184,11 +184,11 @@ const MealsDashboard: React.FC = () => {
                       <TableCell>{meal.choices.breakfast}</TableCell>
                       <TableCell>{meal.choices.lunch}</TableCell>
                       <TableCell>{meal.choices.dinner}</TableCell>
-                      <TableCell>
+                      {/* <TableCell>
                         <IconButton onClick={() => handleEditButtonClick(user)}>
                           <EditIcon />
                         </IconButton>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   ))}
                 </TableBody>

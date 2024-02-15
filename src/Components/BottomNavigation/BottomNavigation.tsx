@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./BottomNavigation.css";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
-import { Swiper, SwiperSlide } from "swiper/react";
-
 import homeIcon from "../../photos/Newuiphotos/nav bar/navicons/home.svg";
 import prayerIcon from "../../photos/Newuiphotos/nav bar/navicons/prayerT.svg";
 import specialPrayerIcon from "../../photos/Newuiphotos/nav bar/navicons/otherprayer.svg";
@@ -16,10 +14,12 @@ import specialPrayerIconActive from "../../photos/Newuiphotos/nav bar/navicons/n
 import eventIconActive from "../../photos/Newuiphotos/nav bar/navicons/navactiveicons/eventsactive.svg";
 import AnnouncementIconActive from "../../photos/Newuiphotos/nav bar/navicons/navactiveicons/Announcementactive.svg";
 import Users from "../../Pages/Users/Users";
+import { getMessInfoFromLocalHost } from "../../helperFunctions";
 
 const BottomNavigation = ({ component }: { component: React.ReactNode }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [tmConOpener, setTmConOpener] = useState(false);
+  const [userRole, setUserRole] = useState("");
   const { tab } = useParams();
   useEffect(() => {
     if (tab) setActiveTab(+tab);
@@ -30,38 +30,51 @@ const BottomNavigation = ({ component }: { component: React.ReactNode }) => {
     navigation(link);
     setActiveTab(index);
   };
-
+  useEffect(() => {
+    const val = getMessInfoFromLocalHost();
+    setUserRole(val.role);
+  }, []);
   const navigationData = [
     {
-      label: "Home",
-      route: "/users",
+      label: "Add Meals",
+      route: "/add-meals",
       icon: homeIcon,
+      for: true,
       activeIcon: homeIconActive,
       content: <Users />,
     },
     {
-      label: "Meals",
+      label: "Manage Meals",
       icon: prayerIcon,
-      route: "/meal-and-date",
+      route: "/manage-meals",
+      for: userRole === "admin" ? true : false,
       activeIcon: prayerIconActive,
       content: <Users />,
     },
     {
-      label: "Add Meal",
-      route: "/add-meals",
+      label: "Manage Users",
+      route: "/users",
+      for: userRole === "admin" ? true : false,
       activeIcon: specialPrayerIconActive,
       icon: specialPrayerIcon,
       content: <Users />,
     },
     {
       label: "Meal Dashboard",
-      route: "/meals",
-      activeIcon: specialPrayerIconActive,
-      icon: specialPrayerIcon,
+      route: "/meals-dashboard",
+      for: true,
+      activeIcon: eventIconActive,
+      icon: eventIcon,
       content: <Users />,
     },
-
-   
+    {
+      label: "Profile",
+      route: "/profile",
+      for: true,
+      activeIcon: profileIcon,
+      icon: profileIcon,
+      content: <Users />,
+    },
   ];
 
   const conditionalImg = (idx: number, item: (typeof navigationData)[0]) => {
@@ -86,8 +99,10 @@ const BottomNavigation = ({ component }: { component: React.ReactNode }) => {
       <div className="bottom-nav-component">{component}</div>
       <div className="bottom-navigation">
         {/* <Swiper spaceBetween={0} slidesPerView={3.5} style={{ padding: "" }}> */}
-          {navigationData.map((item, index) => (
+        {navigationData.map(
+          (item, index) =>
             // <SwiperSlide key={index}>
+            item.for ? (
               <div
                 key={index}
                 className={`nav-item ${activeTab === index ? "active" : ""}`}
@@ -102,8 +117,9 @@ const BottomNavigation = ({ component }: { component: React.ReactNode }) => {
                   {item.label}
                 </span>
               </div>
-            // </SwiperSlide>
-          ))}
+            ) : null
+          // </SwiperSlide>
+        )}
         {/* </Swiper> */}
       </div>
       {/* {activeTab === 0 ? (

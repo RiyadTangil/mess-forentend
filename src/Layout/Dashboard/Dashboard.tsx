@@ -104,10 +104,11 @@ export default function Dashboard() {
   };
 
   const routes = [
-    { text: "Inbox", path: "/meal-and-date", icon: <InboxIcon /> },
-    { text: "Add Meals", path: "/add-meals", icon: <MailIcon /> },
+    { text: "Add Meals", path: "/add-meals", icon: <InboxIcon /> },
+    { text: "Manage Meals", path: "/manage-meals", icon: <MailIcon /> },
     { text: "Starred", path: "/users", icon: <MailIcon /> },
-    { text: "Meals Dashboard", path: "/meals", icon: <MailIcon /> },
+    { text: "Meals Dashboard", path: "/meals-dashboard", icon: <MailIcon /> },
+    { text: "Profile", path: "/profile", icon: <MailIcon /> },
     // { text: 'Drafts', path: '/drafts', icon: <DraftsIcon /> },
   ];
   return (

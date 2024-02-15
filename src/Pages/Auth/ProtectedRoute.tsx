@@ -47,7 +47,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       )}
     </>
   ) : (
-    <Navigate to={"/register"} replace />
+    <Navigate to={"/login"} replace />
   );
 };
 

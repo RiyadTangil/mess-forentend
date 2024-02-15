@@ -15,12 +15,12 @@
 }
 .bottom-nav-container {
   height: 100vh;
-  width: 100%;
-  overflow-x: hidden;
+  width: 97vw;
+  /* overflow: hidden; */
 }
 .bottom-nav-component {
-  height: 90vh;
-  margin: 10px;
+  height: 88vh;
+  /* margin: 10px; */
   overflow-x: hidden;
   overflow-y: scroll;
 }

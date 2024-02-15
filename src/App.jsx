@@ -12,6 +12,7 @@ import { Toaster } from "react-hot-toast";
 import Users from "./Pages/Users/Users";
 import MealsDashboard from "./Pages/Meals/Meals";
 import MealSubmission from "./Pages/MealSubmission/MealSubmission";
+import Profile from "./Pages/Profile/Profile";
 
 function App() {
   return (
@@ -31,20 +32,24 @@ function App() {
             element={<ProtectedRoute component={<MealAndDate />} />}
           />
           <Route
-            path="/meal-and-date"
+            path="/add-meals"
             element={<ProtectedRoute component={<MealAndDate />} />}
           />
           <Route
-            path="/meals"
+            path="/meals-dashboard"
             element={<ProtectedRoute component={<MealsDashboard />} />}
           />
           <Route
-            path="/add-meals"
+            path="/manage-meals"
             element={<ProtectedRoute component={<MealSubmission />} />}
           />
           <Route
-            path="/meals"
+            path="/meals-dashboard"
             element={<ProtectedRoute component={<MealsDashboard />} />}
+          />
+          <Route
+            path="/profile"
+            element={<ProtectedRoute component={<Profile />} />}
           />
         </Routes>
       </Router>
