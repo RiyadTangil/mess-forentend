@@ -1,10 +1,9 @@
-// RegisterPage.tsx
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import jsonwebtoken from "jsonwebtoken";
-
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 import { rootDomain } from "../../API/API";
+import { toast } from "react-hot-toast";
 
 interface FormData {
   name: string;
@@ -21,15 +20,18 @@ const RegisterPage: React.FC = () => {
     confirmPassword: "",
   });
 
+  const [loading, setLoading] = useState<boolean>(false);
   const [warningMessage, setWarningMessage] = useState<string>("");
-  const [accessToken, setAccessToken] = useState<string>("");
+
+  const navigate = useNavigate();
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const navigate = useNavigate();
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
+    setLoading(true);
 
     // Validation
     if (
@@ -39,11 +41,13 @@ const RegisterPage: React.FC = () => {
       !formData.confirmPassword
     ) {
       setWarningMessage("All fields are required.");
+      setLoading(false);
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
       setWarningMessage("Password and Confirm Password do not match.");
+      setLoading(false);
       return;
     }
 
@@ -55,24 +59,19 @@ const RegisterPage: React.FC = () => {
       );
 
       // Handle the API response
-      const { refreshToken, accessToken, data } = response.data.data;
-      // console.log(response.data.data);
-      // const decodedToken: any = jsonwebtoken.decode(accessToken);
-      // console.log(decodedToken,"decodedToken");
-
-      // Store the access token in local storage (you might want to use secure storage methods)
+      const { data } = response.data;
       localStorage.setItem("messInfo", JSON.stringify(data));
-
-      // Decrypt the access token (you might have your own decryption logic)
-      // For demonstration purposes, we'll just use the received access token as is
-      setAccessToken(accessToken);
 
       // Clear any warning message
       setWarningMessage("");
+      setLoading(false);
       navigate("/add-meals");
+      toast.success("Registration successful!");
     } catch (error) {
-      // Handle errors, e.g., if the phone number already exists
+      // Handle errors
       setWarningMessage("Phone number already exists.");
+      setLoading(false);
+      toast.error("Registration failed. Please try again.");
     }
   };
 
@@ -111,14 +110,28 @@ const RegisterPage: React.FC = () => {
             <label htmlFor="password" style={styles.label}>
               Password:
             </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              onChange={handleInputChange}
-              value={formData.password}
-              style={styles.input}
-            />
+            <div style={styles.passwordContainer}>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                onChange={handleInputChange}
+                value={formData.password}
+                style={styles.input}
+              />
+              <span
+                style={styles.eyeIcon}
+                onClick={() => {
+                  const passwordInput = document.getElementById(
+                    "password"
+                  ) as HTMLInputElement;
+                  passwordInput.type =
+                    passwordInput.type === "password" ? "text" : "password";
+                }}
+              >
+                👁️
+              </span>
+            </div>
           </div>
           <div style={styles.formGroup}>
             <label htmlFor="confirmPassword" style={styles.label}>
@@ -135,9 +148,16 @@ const RegisterPage: React.FC = () => {
           </div>
           {warningMessage && <p style={styles.warning}>{warningMessage}</p>}
           <button type="submit" style={styles.submitButton}>
-            Submit
+            {loading ? (
+              <CircularProgress size={24} color="secondary" />
+            ) : (
+              "Submit"
+            )}
           </button>
         </form>
+        <p>
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
       </div>
     </div>
   );
@@ -158,7 +178,6 @@ const styles = {
     background: "#fff",
   },
   cardTitle: {
-    // textAlign: 'center',
     marginBottom: "16px",
     fontSize: "24px",
   },
@@ -177,6 +196,16 @@ const styles = {
     padding: "10px",
     borderRadius: "4px",
     border: "1px solid #ccc",
+  },
+  passwordContainer: {
+    position: "relative",
+  },
+  eyeIcon: {
+    position: "absolute",
+    top: "50%",
+    right: "10px",
+    transform: "translateY(-50%)",
+    cursor: "pointer",
   },
   warning: {
     color: "red",

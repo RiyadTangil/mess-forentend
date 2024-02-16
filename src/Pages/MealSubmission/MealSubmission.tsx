@@ -4,6 +4,9 @@ import { toast } from "react-hot-toast";
 import { getMessInfoFromLocalHost } from "../../helperFunctions";
 import { rootDomain } from "../../API/API";
 
+import ArrowUpwardIcon from "@mui/icons-material/ExpandLess";
+import ArrowDownwardIcon from "@mui/icons-material/ExpandMore";
+
 interface User {
   _id: string;
   name: string;
@@ -124,7 +127,31 @@ const MealSubmission: React.FC = () => {
   if (!messData) {
     return <div>Loading...</div>;
   }
-
+  interface ActionButtonsProps {
+    user: User;
+    label: string;
+  }
+  const ActionButtons: React.FC<ActionButtonsProps> = ({ user, label }) => {
+    return (
+      <td>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {mealChoices[user._id][label]}
+          <div style={{ display: "flex", flexDirection: "column",marginLeft:"5px" }}>
+            <ArrowUpwardIcon onClick={() => handleIncrement(user._id, label)} />
+            <ArrowDownwardIcon
+              onClick={() => handleDecrement(user._id, label)}
+            />
+          </div>
+        </div>
+      </td>
+    );
+  };
   return (
     <div>
       <input type="date" value={selectedDate} onChange={handleDateChange} />
@@ -142,33 +169,9 @@ const MealSubmission: React.FC = () => {
           {messData.users.map((user) => (
             <tr key={user._id}>
               <td>{user.name}</td>
-              <td>
-                <button style={{width:"5px",}} onClick={() => handleDecrement(user._id, "breakfast")}>
-                  -
-                </button>
-                {mealChoices[user._id].breakfast}
-                <button style={{width:"5px",}}  onClick={() => handleIncrement(user._id, "breakfast")}>
-                  +
-                </button>
-              </td>
-              <td>
-                <button onClick={() => handleDecrement(user._id, "lunch")}>
-                  -
-                </button>
-                {mealChoices[user._id].lunch}
-                <button onClick={() => handleIncrement(user._id, "lunch")}>
-                  +
-                </button>
-              </td>
-              <td>
-                <button onClick={() => handleDecrement(user._id, "dinner")}>
-                  -
-                </button>
-                {mealChoices[user._id].dinner}
-                <button onClick={() => handleIncrement(user._id, "dinner")}>
-                  +
-                </button>
-              </td>
+              <ActionButtons user={user} label={"breakfast"} />
+              <ActionButtons user={user} label={"lunch"} />
+              <ActionButtons user={user} label={"dinner"} />
             </tr>
           ))}
         </tbody>

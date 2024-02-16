@@ -29,6 +29,7 @@ interface DepositWithdraw {
 
 interface UserData {
   _id: string;
+  role: string;
   name: string;
   number: string;
   deposit?: DepositWithdraw[];
@@ -40,6 +41,7 @@ const Users: React.FC = () => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserData | null>(null);
   const [name, setName] = useState("");
+  const [role, setRole] = useState("");
   const [number, setNumber] = useState("");
   const [mess_id, setMessId] = useState("");
   const [deposit, setDeposit] = useState<DepositWithdraw[]>([]);
@@ -54,7 +56,7 @@ const Users: React.FC = () => {
     try {
       const userData = JSON.parse(localStorage.getItem("messInfo") ?? "");
       const messId = userData ? userData.mess_id : null;
-      console.log("messId => ", messId);
+
       if (!messId) {
         console.error("Mess ID not found in local storage");
         return;
@@ -71,6 +73,7 @@ const Users: React.FC = () => {
 
   const handleAddUser = () => {
     setName("");
+    setRole("");
     setNumber("");
     setDeposit([]);
     setWithdraw([]);
@@ -80,6 +83,7 @@ const Users: React.FC = () => {
 
   const handleEditUser = (user: UserData) => {
     setName(user.name);
+    setRole(user.role);
     setNumber(user.number);
     setDeposit(user.deposit ?? []);
     setWithdraw(user.withdraw ?? []);
@@ -103,6 +107,7 @@ const Users: React.FC = () => {
   const handleDrawerClose = () => {
     setDrawerOpen(false);
     setName("");
+    setRole("");
     setNumber("");
     setDeposit([]);
     setWithdraw([]);
@@ -112,16 +117,15 @@ const Users: React.FC = () => {
     // Create copies of deposit and withdraw arrays
     let filteredDeposit = [...deposit];
     let filteredWithdraw = [...withdraw];
-    
+
     // Iterate over deposit array to remove objects with amount equal to 0
     for (let i = 0; i < filteredDeposit.length; i++) {
-      
       if (!filteredDeposit[i].amount) {
         filteredDeposit.splice(i, 1); // Remove the object at index i
         i--; // Decrement i to adjust for the removed object
       }
     }
-  
+
     // Iterate over withdraw array to remove objects with amount equal to 0
     for (let i = 0; i < filteredWithdraw.length; i++) {
       if (!filteredWithdraw[i].amount) {
@@ -129,24 +133,29 @@ const Users: React.FC = () => {
         i--; // Decrement i to adjust for the removed object
       }
     }
-  
+
     const requestData = {
       name,
       number,
       password: number,
-      role: "user",
       mess_id,
       deposit: filteredDeposit,
       withdraw: filteredWithdraw,
     };
-  
+
     try {
       let response;
       if (editingUser) {
         // Remove _id from deposit and withdraw with same date and amount
-        const updatedDeposit = filteredDeposit.map((d) => ({ ...d, _id: undefined }));
-        const updatedWithdraw = filteredWithdraw.map((w) => ({ ...w, _id: undefined }));
-  
+        const updatedDeposit = filteredDeposit.map((d) => ({
+          ...d,
+          _id: undefined,
+        }));
+        const updatedWithdraw = filteredWithdraw.map((w) => ({
+          ...w,
+          _id: undefined,
+        }));
+
         response = await axios.patch(rootDomain + `/users/${editingUser._id}`, {
           ...requestData,
           deposit: updatedDeposit,
@@ -155,13 +164,13 @@ const Users: React.FC = () => {
       } else {
         response = await axios.post(rootDomain + "/users/signup", requestData);
       }
-  
+
       const updatedUsers = editingUser
         ? userData.map((user) =>
             user._id === editingUser._id ? response.data.data : user
           )
         : [...userData, response.data.data];
-  
+
       setUserData(updatedUsers);
       setDrawerOpen(false);
       toast.success(
@@ -172,7 +181,6 @@ const Users: React.FC = () => {
       toast.error("Error adding/updating user. Please try again.");
     }
   };
-  
 
   const handleDepositChange = (index: number, key: string, value: string) => {
     const updatedDeposit = [...deposit];
@@ -219,41 +227,48 @@ const Users: React.FC = () => {
         </Button>
       </div>
       <TableContainer component={Paper}>
-  <Table>
-    <TableHead>
-      <TableRow>
-        <TableCell>Name</TableCell>
-        <TableCell>Number</TableCell>
-        <TableCell>Deposited</TableCell> {/* New column */}
-        <TableCell>Actions</TableCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {userData.map((user) => (
-        <TableRow key={user._id}>
-          <TableCell>{user.name}</TableCell>
-          <TableCell>{user.number}</TableCell>
-          <TableCell>
-            {/* Calculate the total deposited amount */}
-            {user.deposit?.reduce((total, deposit) => total + deposit.amount, 0) -
-              (user.withdraw?.reduce((total, withdraw) => total + withdraw.amount, 0) || 0)}
-          </TableCell>
-          <TableCell>
-            <IconButton onClick={() => handleEditUser(user)}>
-              <EditIcon />
-            </IconButton>
-            <IconButton onClick={() => handleDeleteUser(user._id)}>
-              <DeleteIcon />
-            </IconButton>
-          </TableCell>
-        </TableRow>
-      ))}
-    </TableBody>
-  </Table>
-</TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Number</TableCell>
+              <TableCell>Deposited</TableCell> {/* New column */}
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {userData.map((user) => (
+              <TableRow key={user._id}>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.number}</TableCell>
+                
+                <TableCell>
+                  {/* Calculate the total deposited amount */}
+                  {user.deposit?.reduce(
+                    (total, deposit) => total + deposit.amount,
+                    0
+                  ) -
+                    (user.withdraw?.reduce(
+                      (total, withdraw) => total + withdraw.amount,
+                      0
+                    ) || 0)}
+                </TableCell>
+                <TableCell>
+                  <IconButton onClick={() => handleEditUser(user)}>
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton onClick={() => handleDeleteUser(user._id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <Drawer anchor="right" open={isDrawerOpen} onClose={handleDrawerClose}>
-        <div style={{ padding: "20px", width: "400px" }}>
+        <div style={{ padding: "20px", width: "70vw" }}>
           <h2>{editingUser ? "Edit User" : "Add User"}</h2>
           <TextField
             label="Name"

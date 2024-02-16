@@ -7,10 +7,12 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
+import { getMessInfoFromLocalHost } from "../../helperFunctions";
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [userInfo, setUserInfo] = useState(getMessInfoFromLocalHost());
 
   const handleLogout = () => {
     // Open the confirmation dialog
@@ -34,7 +36,7 @@ const Profile: React.FC = () => {
     <div>
       <h1>Profile Page</h1>
       {/* Display user information */}
-      <p>Welcome, [User Name]!</p>
+      <p>Welcome, {userInfo?.name}</p>
 
       {/* Logout button */}
       <Button variant="contained" color="primary" onClick={handleLogout}>

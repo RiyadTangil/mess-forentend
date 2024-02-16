@@ -1,7 +1,15 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { rootDomain } from "../../API/API";
+import {
+  CircularProgress,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { toast } from "react-hot-toast";
 
 interface FormData {
   number: string;
@@ -15,6 +23,8 @@ const Login: React.FC = () => {
     password: "",
   });
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,6 +40,9 @@ const Login: React.FC = () => {
     }
 
     try {
+      // Start loading
+      setLoading(true);
+
       // API Request
       const response = await axios.post(rootDomain + "/auth/login", formData);
 
@@ -44,10 +57,23 @@ const Login: React.FC = () => {
       // Clear any previous error messages
       setErrorMessage("");
       navigate("/add-meals");
+
+      // Show success message
+      toast.success("Login successful");
     } catch (error) {
       // Handle errors, e.g., invalid credentials
       setErrorMessage("Invalid credentials. Please try again.");
+
+      // Show error message
+      toast.error("Invalid credentials. Please try again.");
+    } finally {
+      // Stop loading
+      setLoading(false);
     }
+  };
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
   };
 
   return (
@@ -71,19 +97,36 @@ const Login: React.FC = () => {
           <label htmlFor="password" style={styles.label}>
             Password:
           </label>
-          <input
-            type="password"
+          <TextField
+            type={showPassword ? "text" : "password"}
             id="password"
             name="password"
             onChange={handleInputChange}
             value={formData.password}
+            variant="outlined"
             style={styles.input}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleTogglePasswordVisibility}>
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         </div>
         {errorMessage && <p style={styles.error}>{errorMessage}</p>}
         <button type="submit" style={styles.submitButton}>
-          Submit
+          {loading ? (
+            <CircularProgress color="secondary" size={24} />
+          ) : (
+            "Submit"
+          )}
         </button>
+        <p style={{ textAlign: "center", marginTop: "20px" }}>
+          Don't have an account? <Link to="/register">Register here</Link>
+        </p>
       </form>
     </div>
   );
@@ -103,8 +146,8 @@ const styles = {
     marginBottom: "20px",
   },
   form: {
-    display: "flex",
-    flexDirection: "column",
+    display: "flex" as "flex",
+    flexDirection: "column" as "column",
   },
   formGroup: {
     marginBottom: "16px",
@@ -117,6 +160,7 @@ const styles = {
     padding: "10px",
     borderRadius: "4px",
     border: "1px solid #ccc",
+    width: "100%",
   },
   error: {
     color: "red",
@@ -128,6 +172,9 @@ const styles = {
     padding: "10px",
     borderRadius: "4px",
     cursor: "pointer",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 };
 
