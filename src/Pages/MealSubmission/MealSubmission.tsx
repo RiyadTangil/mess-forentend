@@ -28,6 +28,9 @@ interface MessData {
 
 const MealSubmission: React.FC = () => {
   const [messData, setMessData] = useState<MessData | null>(null);
+  const [usersWhoseMealsFound, setUsersWhoseMealsFound] = useState<
+    Record<string, string>
+  >({});
   const [mealChoices, setMealChoices] = useState<
     Record<string, Meal["choices"]>
   >({});
@@ -48,7 +51,11 @@ const MealSubmission: React.FC = () => {
         const res = response.data.data;
         setMessData(res);
         const initialMealChoices: Record<string, Meal["choices"]> = {};
+        const usersWhoseMealsExist: Record<string, string> = {};
+
         res.users.forEach((user) => {
+          if (user.meals[0]?.choices)
+            usersWhoseMealsExist[user._id] = user.meals[0]?._id;
           initialMealChoices[user._id] = user.meals[0]?.choices || {
             breakfast: 0,
             lunch: 0,
@@ -56,6 +63,7 @@ const MealSubmission: React.FC = () => {
           };
         });
         setMealChoices(initialMealChoices);
+        setUsersWhoseMealsFound(usersWhoseMealsExist);
       } catch (error) {
         console.error("Error fetching mess data", error);
         toast.error("Error fetching mess data");
@@ -93,11 +101,9 @@ const MealSubmission: React.FC = () => {
       toast.loading("Submitting meal choices...");
       const requests = Object.entries(mealChoices).map(
         async ([userId, mealChoice]) => {
-          const todayMeal = messData?.meals?.find(
-            (meal) => meal.date === selectedDate && meal.user === userId
-          );
-          if (todayMeal) {
-            await axios.patch(rootDomain + `/meal/${todayMeal._id}`, {
+          if (Object.keys(usersWhoseMealsFound).includes(userId)) {
+
+            await axios.patch(rootDomain + `/meal/${usersWhoseMealsFound[userId]}`, {
               choices: mealChoice,
             });
           } else {
@@ -142,7 +148,13 @@ const MealSubmission: React.FC = () => {
           }}
         >
           {mealChoices[user._id][label]}
-          <div style={{ display: "flex", flexDirection: "column",marginLeft:"5px" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginLeft: "5px",
+            }}
+          >
             <ArrowUpwardIcon onClick={() => handleIncrement(user._id, label)} />
             <ArrowDownwardIcon
               onClick={() => handleDecrement(user._id, label)}

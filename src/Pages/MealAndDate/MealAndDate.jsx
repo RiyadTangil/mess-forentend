@@ -30,7 +30,7 @@ const MealAndDate = () => {
   useEffect(() => {
     const messInfo = getMessInfoFromLocalHost();
     setCurrentUserId(messInfo.userId);
-  
+
     setMessId(messInfo.mess_id);
 
     const fetchData = async () => {
@@ -210,8 +210,13 @@ const MealAndDate = () => {
                   {info?.choices?.dinner > 0 ? info?.choices?.dinner : "X"}
                 </td>
                 <td>
-                  {/* {Object.keys(info?.newChoice)?.length} */}
-                  <button onClick={() => changeRequest(info)}> Edit</button>
+                  <button
+                    disabled={date !== info.date ? true : false}
+                    onClick={() => changeRequest(info)}
+                  >
+                    {" "}
+                    Edit
+                  </button>
                 </td>
               </tr>
             ))}
