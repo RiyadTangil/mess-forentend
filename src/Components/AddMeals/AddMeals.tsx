@@ -7,13 +7,15 @@ import Button from "@mui/material/Button";
 import { rootDomain } from "../../API/API";
 import { Box } from "@mui/material";
 import { UserInfo } from "../../Types";
+import { getToday } from "../../helperFunctions";
+import toast from "react-hot-toast";
 
 interface MealAndDateProps {
   handleEditRequest: () => void;
   userId: string;
-  info: UserInfo["meals"] | null; 
-  previousMyDates:any
-  setMyDates:any
+  info: UserInfo["meals"] | null;
+  previousMyDates: any;
+  setMyDates: any;
 }
 
 const MealAndDate: React.FC<MealAndDateProps> = ({
@@ -26,9 +28,7 @@ const MealAndDate: React.FC<MealAndDateProps> = ({
     lunch: 0,
     dinner: 0,
   };
-  const [date, setDate] = useState<string>(
-    new Date().toLocaleString().replace(/\//g, '-').slice(0, 10)
-  );
+  const [date, setDate] = useState<string>(getToday());
   const [userChoices, setUserChoices] = useState(initialChoice);
   const [previousMyDates, setMyDates] = useState<any[]>([]); // Replace 'any' with the type of 'previousMyDates'
 
@@ -96,14 +96,16 @@ const MealAndDate: React.FC<MealAndDateProps> = ({
       choices: userChoices,
     });
     setReload(!reload);
-    setDate(new Date().toLocaleString().replace(/\//g, '-').slice(0, 10));
+    setDate(getToday());
   };
 
   const handleSave = async () => {
+    toast.loading("Submitting meal choices...");
     const isItemExist = previousMyDates.find((entry) => entry.date === date);
 
     if (isItemExist) {
       await handleExistingDataUpdate(isItemExist._id);
+      toast.success("Meal choices submitted successfully");
     } else {
       const newUserChoice = {
         date,
@@ -113,9 +115,10 @@ const MealAndDate: React.FC<MealAndDateProps> = ({
       };
 
       await axios.post(rootDomain + `/meal/create-meal`, newUserChoice);
+      toast.success("Meal choices submitted successfully");
       setMyDates((prevDates) => [...prevDates, newUserChoice]);
       setReload(!reload);
-      setDate(new Date().toLocaleString().replace(/\//g, '-').slice(0, 10));
+      setDate(getToday());
     }
 
     setUserChoices(initialChoice);
@@ -141,11 +144,13 @@ const MealAndDate: React.FC<MealAndDateProps> = ({
   // handleEditRequest();
 
   const handleUpdate = async () => {
+    toast.loading("Submitting meal choices...");
     const updatingUserChoice = userChoices;
     const lastIdx = previousMyDates.length - 1;
     setUserChoices(previousMyDates[lastIdx]?.choices);
 
     await handleExistingDataUpdate(rqsId);
+    toast.success("Meal choices submitted successfully");
     setDate(previousMyDates[lastIdx]?.date);
     setRqsId(0);
     toggleDrawer();

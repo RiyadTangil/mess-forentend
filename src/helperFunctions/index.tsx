@@ -4,3 +4,7 @@ export const getMessInfoFromLocalHost = () => {
 
   return messInfo;
 };
+export const getToday = () => {
+  const today = new Date().toLocaleString().replace(/\//g, "-").split(",")[0];
+  return today;
+};

@@ -21,9 +21,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import EditIcon from "@mui/icons-material/Edit";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { rootDomain } from "../../API/API";
-import { getMessInfoFromLocalHost } from "../../helperFunctions";
+import { getMessInfoFromLocalHost, getToday } from "../../helperFunctions";
 import { MealsApiResponse, UserInfo } from "../../Types";
-
 
 const MealsDashboard: React.FC = () => {
   const [mealsData, setMealsData] = useState<MealsApiResponse | null>(null);
@@ -101,7 +100,7 @@ const MealsDashboard: React.FC = () => {
     let allUsersDinner = 0;
     let allUsersMeals = 0;
 
-    const today = new Date().toISOString().split("T")[0];
+    const today = getToday();
 
     for (const user of users) {
       for (const meal of user.meals) {

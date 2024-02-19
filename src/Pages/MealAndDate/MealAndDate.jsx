@@ -6,7 +6,7 @@ import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
 import { rootDomain } from "../../API/API";
 import { Box } from "@mui/material";
-import { getMessInfoFromLocalHost } from "../../helperFunctions";
+import { getMessInfoFromLocalHost, getToday } from "../../helperFunctions";
 const MealAndDate = () => {
   const initialChoice = {
     breakfast: 0,
@@ -14,7 +14,7 @@ const MealAndDate = () => {
     dinner: 0,
   };
   const [userChoices, setUserChoices] = useState(initialChoice);
-  const [date, setDate] = useState(new Date().toLocaleString().replace(/\//g, '-').slice(0, 10));
+  const [date, setDate] = useState(getToday());
   const [previousMyDates, setMyDates] = useState([]);
 
   const [rqsId, setRqsId] = useState(0);
@@ -82,7 +82,7 @@ const MealAndDate = () => {
       choices: userChoices,
     });
     setReload(!reload);
-    setDate(new Date().toLocaleString().replace(/\//g, '-').slice(0, 10));
+    setDate(getToday());
   };
 
   const handleSave = async () => {
@@ -103,7 +103,7 @@ const MealAndDate = () => {
       await axios.post(rootDomain + `/meal/create-meal`, newUserChoice);
       setMyDates((prevDates) => [...prevDates, newUserChoice]);
       setReload(!reload);
-      setDate(new Date().toLocaleString().replace(/\//g, '-').slice(0, 10));
+      setDate(getToday());
     }
 
     setUserChoices(initialChoice);
@@ -180,7 +180,7 @@ const MealAndDate = () => {
         </Button>
       </Box>
 
-      <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer}>
+      <Drawer  anchor="right"  open={isDrawerOpen} onClose={toggleDrawer}>
         <DrawerContent />
       </Drawer>
 

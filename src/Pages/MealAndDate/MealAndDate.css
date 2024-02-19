@@ -14,6 +14,7 @@ body {
   width: 100%;
   justify-content: center;
 }
+
 .drawer-content{
   margin-top: 50px;
 }
@@ -23,6 +24,7 @@ body {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin: 20px;
+  width: 70vw;
   background-color: #ffffff;
 
   max-width: 400px;

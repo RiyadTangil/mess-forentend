@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { getMessInfoFromLocalHost } from "../../helperFunctions";
+import { getMessInfoFromLocalHost, getToday } from "../../helperFunctions";
 import { rootDomain } from "../../API/API";
 
 import ArrowUpwardIcon from "@mui/icons-material/ExpandLess";
@@ -34,9 +34,7 @@ const MealSubmission: React.FC = () => {
   const [mealChoices, setMealChoices] = useState<
     Record<string, Meal["choices"]>
   >({});
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toLocaleString().replace(/\//g, '-').slice(0, 10)
-  );
+  const [selectedDate, setSelectedDate] = useState<string>(getToday());
 
   useEffect(() => {
     const fetchMessData = async () => {
@@ -102,10 +100,12 @@ const MealSubmission: React.FC = () => {
       const requests = Object.entries(mealChoices).map(
         async ([userId, mealChoice]) => {
           if (Object.keys(usersWhoseMealsFound).includes(userId)) {
-
-            await axios.patch(rootDomain + `/meal/${usersWhoseMealsFound[userId]}`, {
-              choices: mealChoice,
-            });
+            await axios.patch(
+              rootDomain + `/meal/${usersWhoseMealsFound[userId]}`,
+              {
+                choices: mealChoice,
+              }
+            );
           } else {
             await axios.post(rootDomain + "/meal/create-meal", {
               date: selectedDate,

@@ -22,6 +22,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import AddIcon from "@material-ui/icons/Add";
 import toast from "react-hot-toast";
 import { rootDomain } from "../../API/API";
+import { getToday } from "../../helperFunctions";
 interface DepositWithdraw {
   date: string;
   amount: number;
@@ -46,7 +47,7 @@ const Users: React.FC = () => {
   const [mess_id, setMessId] = useState("");
   const [deposit, setDeposit] = useState<DepositWithdraw[]>([]);
   const [withdraw, setWithdraw] = useState<DepositWithdraw[]>([]);
-  const [today] = useState(new Date().toLocaleString().replace(/\//g, '-').slice(0, 10));
+  const [today] = useState(getToday());
 
   useEffect(() => {
     fetchData();
@@ -137,7 +138,7 @@ const Users: React.FC = () => {
     const requestData = {
       name,
       number,
-      role:role?role:'user',
+      role: role ? role : "user",
       password: number,
       mess_id,
       deposit: filteredDeposit,
@@ -242,7 +243,7 @@ const Users: React.FC = () => {
               <TableRow key={user._id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.number}</TableCell>
-                
+
                 <TableCell>
                   {/* Calculate the total deposited amount */}
                   {user.deposit?.reduce(
