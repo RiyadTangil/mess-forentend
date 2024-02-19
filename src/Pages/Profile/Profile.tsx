@@ -77,6 +77,7 @@ const Profile: React.FC = () => {
       name: userInfo?.name || "",
       number: userInfo?.number || "",
       password: "",
+      mess_id: userInfo?.mess_id || "",
     });
     setEditing(false);
   };
@@ -90,7 +91,7 @@ const Profile: React.FC = () => {
       </Grid>
       <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
         <Card
-          sx={{ width: "80%", borderRadius: "20px" }}
+          sx={{ width: "95%", borderRadius: "20px" }}
           variant={editing ? "outlined" : "elevation"}
         >
           {" "}
