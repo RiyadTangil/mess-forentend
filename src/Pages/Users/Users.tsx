@@ -137,7 +137,7 @@ const Users: React.FC = () => {
     const requestData = {
       name,
       number,
-      role:'user',
+      role:role?role:'user',
       password: number,
       mess_id,
       deposit: filteredDeposit,

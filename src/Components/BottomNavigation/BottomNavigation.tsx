@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./BottomNavigation.css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import homeIcon from "../../photos/Newuiphotos/nav bar/navicons/home.svg";
@@ -98,30 +103,30 @@ const BottomNavigation = ({ component }: { component: React.ReactNode }) => {
       /> */}
       <div className="bottom-nav-component">{component}</div>
       <div className="bottom-navigation">
-        {/* <Swiper spaceBetween={0} slidesPerView={3.5} style={{ padding: "" }}> */}
-        {navigationData.map(
-          (item, index) =>
-            // <SwiperSlide key={index}>
+        <Swiper spaceBetween={0} slidesPerView={3.5}>
+          {navigationData.map((item, index) =>
             item.for ? (
-              <div
-                key={index}
-                className={`nav-item ${activeTab === index ? "active" : ""}`}
-                onClick={() => handleTabChange(item.route, index)}
-              >
-                {conditionalImg(index, item)}
-                <span
-                  className={
-                    activeTab === index ? "nav-label-active" : "nav-label"
-                  }
+              <SwiperSlide key={index}>
+                <div
+                  key={index}
+                  className={`nav-item ${activeTab === index ? "active" : ""}`}
+                  onClick={() => handleTabChange(item.route, index)}
                 >
-                  {item.label}
-                </span>
-              </div>
+                  {conditionalImg(index, item)}
+                  <span
+                    className={
+                      activeTab === index ? "nav-label-active" : "nav-label"
+                    }
+                  >
+                    {item.label}
+                  </span>
+                </div>
+              </SwiperSlide>
             ) : null
-          // </SwiperSlide>
-        )}
-        {/* </Swiper> */}
+          )}
+        </Swiper>
       </div>
+
       {/* {activeTab === 0 ? (
         <h1 className="term-condition-tx" onClick={() => setTmConOpener(true)}>
           Term and Conditions
