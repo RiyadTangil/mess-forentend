@@ -115,6 +115,7 @@ const Users: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    toast.loading("Submitting User...");
     // Create copies of deposit and withdraw arrays
     let filteredDeposit = [...deposit];
     let filteredWithdraw = [...withdraw];
@@ -181,6 +182,8 @@ const Users: React.FC = () => {
     } catch (error) {
       console.error("Error adding/updating user", error);
       toast.error("Error adding/updating user. Please try again.");
+    } finally {
+      toast.dismiss();
     }
   };
 

@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import { rootDomain } from "../../API/API";
 import { Box } from "@mui/material";
 import { getMessInfoFromLocalHost, getToday } from "../../helperFunctions";
+import toast from "react-hot-toast";
 const MealAndDate = () => {
   const initialChoice = {
     breakfast: 0,
@@ -77,15 +78,18 @@ const MealAndDate = () => {
   // newChoice = {}
   const handleExistingDataUpdate = async (mealId) => {
     // setMyDates(updatedDates);
-
+    toast.loading("Submitting meal choices...");
     await axios.patch(rootDomain + `/meal/${mealId}`, {
       choices: userChoices,
     });
+    toast.dismiss();
+    toast.success("Meal choices submitted successfully");
     setReload(!reload);
     setDate(getToday());
   };
 
   const handleSave = async () => {
+    toast.loading("Submitting meal choices...");
     const isItemExist = previousMyDates.find((entry) => entry.date === date);
 
     if (isItemExist) {
@@ -101,6 +105,8 @@ const MealAndDate = () => {
       };
 
       await axios.post(rootDomain + `/meal/create-meal`, newUserChoice);
+      toast.success("Meal choices submitted successfully");
+      toast.dismiss()
       setMyDates((prevDates) => [...prevDates, newUserChoice]);
       setReload(!reload);
       setDate(getToday());
@@ -180,7 +186,7 @@ const MealAndDate = () => {
         </Button>
       </Box>
 
-      <Drawer  anchor="right"  open={isDrawerOpen} onClose={toggleDrawer}>
+      <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer}>
         <DrawerContent />
       </Drawer>
 
