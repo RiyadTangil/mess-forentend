@@ -59,7 +59,7 @@ const RegisterPage: React.FC = () => {
       );
 
       // Handle the API response
-      const { data } = response.data;
+      const { data } = response.data.data;
       localStorage.setItem("messInfo", JSON.stringify(data));
 
       // Clear any warning message
