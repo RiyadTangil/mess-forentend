@@ -85,7 +85,7 @@ const Profile: React.FC = () => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h6" gutterBottom>
           Profile Page
         </Typography>
       </Grid>
@@ -103,7 +103,7 @@ const Profile: React.FC = () => {
                 alignItems="center"
                 justifyContent="space-between"
               >
-                <Typography variant="h5">User Information</Typography>
+                <Typography variant="p">User Information</Typography>
                 <IconButton onClick={handleEdit}>
                   <EditIcon />
                 </IconButton>
