@@ -139,7 +139,7 @@ const styles = {
     padding: "24px",
     width: "300px",
     background: "#fff",
-    margin: "50px",
+    // margin: "50px",
   },
   title: {
     fontSize: "24px",
