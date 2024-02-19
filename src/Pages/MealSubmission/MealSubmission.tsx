@@ -35,7 +35,7 @@ const MealSubmission: React.FC = () => {
     Record<string, Meal["choices"]>
   >({});
   const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().slice(0, 10)
+    new Date().toLocaleString().replace(/\//g, '-').slice(0, 10)
   );
 
   useEffect(() => {

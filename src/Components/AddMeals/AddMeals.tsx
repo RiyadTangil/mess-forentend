@@ -27,7 +27,7 @@ const MealAndDate: React.FC<MealAndDateProps> = ({
     dinner: 0,
   };
   const [date, setDate] = useState<string>(
-    new Date().toISOString().slice(0, 10)
+    new Date().toLocaleString().replace(/\//g, '-').slice(0, 10)
   );
   const [userChoices, setUserChoices] = useState(initialChoice);
   const [previousMyDates, setMyDates] = useState<any[]>([]); // Replace 'any' with the type of 'previousMyDates'
@@ -96,7 +96,7 @@ const MealAndDate: React.FC<MealAndDateProps> = ({
       choices: userChoices,
     });
     setReload(!reload);
-    setDate(new Date().toISOString().slice(0, 10));
+    setDate(new Date().toLocaleString().replace(/\//g, '-').slice(0, 10));
   };
 
   const handleSave = async () => {
@@ -115,7 +115,7 @@ const MealAndDate: React.FC<MealAndDateProps> = ({
       await axios.post(rootDomain + `/meal/create-meal`, newUserChoice);
       setMyDates((prevDates) => [...prevDates, newUserChoice]);
       setReload(!reload);
-      setDate(new Date().toISOString().slice(0, 10));
+      setDate(new Date().toLocaleString().replace(/\//g, '-').slice(0, 10));
     }
 
     setUserChoices(initialChoice);

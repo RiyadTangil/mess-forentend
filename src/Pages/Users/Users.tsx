@@ -46,7 +46,7 @@ const Users: React.FC = () => {
   const [mess_id, setMessId] = useState("");
   const [deposit, setDeposit] = useState<DepositWithdraw[]>([]);
   const [withdraw, setWithdraw] = useState<DepositWithdraw[]>([]);
-  const [today] = useState(new Date().toISOString().slice(0, 10));
+  const [today] = useState(new Date().toLocaleString().replace(/\//g, '-').slice(0, 10));
 
   useEffect(() => {
     fetchData();

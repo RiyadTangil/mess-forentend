@@ -14,7 +14,7 @@ const MealAndDate = () => {
     dinner: 0,
   };
   const [userChoices, setUserChoices] = useState(initialChoice);
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(new Date().toLocaleString().replace(/\//g, '-').slice(0, 10));
   const [previousMyDates, setMyDates] = useState([]);
 
   const [rqsId, setRqsId] = useState(0);
@@ -82,7 +82,7 @@ const MealAndDate = () => {
       choices: userChoices,
     });
     setReload(!reload);
-    setDate(new Date().toISOString().slice(0, 10));
+    setDate(new Date().toLocaleString().replace(/\//g, '-').slice(0, 10));
   };
 
   const handleSave = async () => {
@@ -103,7 +103,7 @@ const MealAndDate = () => {
       await axios.post(rootDomain + `/meal/create-meal`, newUserChoice);
       setMyDates((prevDates) => [...prevDates, newUserChoice]);
       setReload(!reload);
-      setDate(new Date().toISOString().slice(0, 10));
+      setDate(new Date().toLocaleString().replace(/\//g, '-').slice(0, 10));
     }
 
     setUserChoices(initialChoice);
