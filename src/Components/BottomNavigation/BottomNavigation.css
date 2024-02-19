@@ -90,7 +90,7 @@
   color: #154f30;
   font-size: 12px;
 }
-@media only screen and (max-width: 388px) {
+@media only screen and (max-width: 400px) {
   .nav-label,
   .nav-label-active {
     font-size: 8px;
