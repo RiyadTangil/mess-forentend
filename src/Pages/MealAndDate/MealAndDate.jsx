@@ -6,6 +6,8 @@ import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
 import { rootDomain } from "../../API/API";
 import { Box } from "@mui/material";
+import CancelIcon from '@mui/icons-material/Cancel';
+
 import { getMessInfoFromLocalHost, getToday } from "../../helperFunctions";
 import toast from "react-hot-toast";
 const MealAndDate = () => {
@@ -108,7 +110,7 @@ const MealAndDate = () => {
   };
 
   const handleSave = async () => {
-    toast.loading("Submitting meal choices...");
+    
     const isItemExist = previousMyDates.find((entry) => entry.date === date);
 
     if (isItemExist) {
@@ -122,7 +124,7 @@ const MealAndDate = () => {
         user: currentUserId,
         mess: messId,
       };
-
+      toast.loading("Submitting meal choices...");
       await axios.post(rootDomain + `/meal/create-meal`, newUserChoice);
       toast.success("Meal choices submitted successfully");
       toast.dismiss();
@@ -173,21 +175,24 @@ const MealAndDate = () => {
     );
   };
 
+ 
   const DrawerContent = () => (
     <div className="drawer-content">
       <div className="card">
         <p className="header">Place Meal and Date</p>
         <p className="date">Date: {date}</p>
+        <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
+          <Button
+            variant="text"
+            className="cancel-btn"
+            onClick={toggleDrawer}
+          >
+            <CancelIcon />
+          </Button>
+        </Box>
         <div className="checkboxes">
           {["breakfast", "lunch", "dinner"].map((label) => MealInput(label))}
         </div>
-        <Button
-          variant="outlined"
-          className="cancel-btn"
-          onClick={toggleDrawer}
-        >
-          Cancel
-        </Button>
         <Button
           className="save-btn"
           onClick={rqsId ? () => handleUpdate() : () => handleSave()}
@@ -197,6 +202,7 @@ const MealAndDate = () => {
       </div>
     </div>
   );
+  
 
   return (
     <div className="meal-container">
