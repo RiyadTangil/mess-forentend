@@ -48,8 +48,18 @@ const MealAndDate = () => {
 
     fetchData();
   }, [reload, currentUserId]);
-
+  
+  const restrictedTm = { dinner: "8 pm", breakfast: "8 am", lunch: "8 am" };
   const handleIncrement = (meal) => {
+    const currentTime = new Date().getHours();
+    if (
+      (meal === "breakfast" && currentTime >= 8) ||
+      (meal === "lunch" && currentTime >= 8) ||
+      (meal === "dinner" && currentTime >= 18)
+    ) {
+      toast.error(`Cannot update ${meal} choice after ` + restrictedTm[meal]);
+      return;
+    }
     setUserChoices((prevChoices) => ({
       ...prevChoices,
       [meal]: prevChoices[meal] ? prevChoices[meal] + 1 : 1,
@@ -57,6 +67,15 @@ const MealAndDate = () => {
   };
 
   const handleDecrement = (meal) => {
+    const currentTime = new Date().getHours();
+    if (
+      (meal === "breakfast" && currentTime >= 8) ||
+      (meal === "lunch" && currentTime >= 8) ||
+      (meal === "dinner" && currentTime >= 18)
+    ) {
+      toast.error(`Cannot update ${meal} choice after ` + restrictedTm[meal]);
+      return;
+    }
     setUserChoices((prevChoices) => ({
       ...prevChoices,
       [meal]:
@@ -106,7 +125,7 @@ const MealAndDate = () => {
 
       await axios.post(rootDomain + `/meal/create-meal`, newUserChoice);
       toast.success("Meal choices submitted successfully");
-      toast.dismiss()
+      toast.dismiss();
       setMyDates((prevDates) => [...prevDates, newUserChoice]);
       setReload(!reload);
       setDate(getToday());

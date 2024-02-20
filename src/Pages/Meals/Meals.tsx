@@ -29,6 +29,16 @@ const MealsDashboard: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserInfo | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [todayMealInfo, setTodayMealInfo] = useState({
+    breakFast: 0,
+    lunch: 0,
+    dinner: 0,
+  });
+  const [totalMealInfo, setTotalMealInfo] = useState({
+    breakFast: 0,
+    lunch: 0,
+    dinner: 0,
+  });
 
   // Fetch meals data from the API
   useEffect(() => {
@@ -40,6 +50,8 @@ const MealsDashboard: React.FC = () => {
         );
         const data: MealsApiResponse = await response.json();
         setMealsData(data);
+        console.log("data?.data?.users => ", data?.data?.users);
+        calculateTodayMeals(data?.data?.users);
       } catch (error) {
         console.error("Error fetching meals data:", error);
       }
@@ -98,7 +110,6 @@ const MealsDashboard: React.FC = () => {
     let allUsersBreakfast = 0;
     let allUsersLunch = 0;
     let allUsersDinner = 0;
-    let allUsersMeals = 0;
 
     const today = getToday();
 
@@ -114,54 +125,41 @@ const MealsDashboard: React.FC = () => {
         allUsersDinner += meal.choices.dinner;
       }
     }
-
-    return (
-      <>
-        <Card sx={{ mb: 2 }}>
-          <CardContent>
-            <Typography variant="h6">Total Meals of All Users</Typography>
-            <Typography variant="body2">
-              Total Meals:{" "}
-              {allUsersBreakfast / 2 + allUsersLunch + allUsersDinner} |
-              Breakfast: {allUsersBreakfast} | Lunch: {allUsersLunch} | Dinner:{" "}
-              {allUsersDinner}
-            </Typography>
-          </CardContent>
-          <CardContent>
-            <Typography variant="h6">Today's Meals of All Users</Typography>
-            <Typography variant="body2">
-              Breakfast: {todayBreakfast} | Lunch: {todayLunch}| Dinner:{" "}
-              {todayDinner}
-            </Typography>
-          </CardContent>
-        </Card>
-      </>
-    );
+    setTodayMealInfo({
+      breakFast: todayBreakfast,
+      lunch: todayLunch,
+      dinner: todayDinner,
+    });
+    setTotalMealInfo({
+      breakFast: allUsersBreakfast,
+      lunch: allUsersLunch,
+      dinner: allUsersDinner,
+    });
   };
   return (
     <div>
-      {calculateTodayMeals(mealsData?.data?.users)}
-      {/* <Card sx={{ mb: 2 }}>
+      <Card sx={{ mb: 1, borderRadius: "16px" }}>
         <CardContent>
-          <Typography variant="h6">Total Meals of All Users</Typography>
+          <Typography variant="h6">আজকে মোট মিল হবে</Typography>
           <Typography variant="body2">
-            Total Meals: {allUsersMeals} | Breakfast: {allUsersBreakfast} |
-            Lunch: {allUsersLunch}| Dinner: {allUsersDinner}
+            মোট মিল{" "}
+            {todayMealInfo.breakFast / 2 +
+              todayMealInfo.lunch +
+              todayMealInfo.dinner}{" "}
+            | সকাল : {todayMealInfo.breakFast} | দুপুর: {todayMealInfo.lunch} |
+            রাত: {todayMealInfo.dinner}
           </Typography>
         </CardContent>
-        <CardContent>
-          <Typography variant="h6">Today's Meals of All Users</Typography>
-        </CardContent>
-      </Card> */}
+      </Card>
 
       {mealsData?.data.users.map((user) => (
-        <div key={user._id}>
-          <Card>
+        <div key={user._id} style={{marginBottom:"8px"}} >
+          <Card style={{ borderRadius: "16px 16px 0px 0px" }}>
             <CardContent>
               <Typography variant="h6">{user.name} </Typography>
             </CardContent>
           </Card>
-          <Accordion>
+          <Accordion  style={{ borderRadius: " 0px 0px 16px 16px" }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               {calculateTotalMeals(user.meals)}
             </AccordionSummary>
@@ -196,6 +194,19 @@ const MealsDashboard: React.FC = () => {
           </Accordion>
         </div>
       ))}
+      <Card sx={{ mt: 1 ,borderRadius:"16px" }}>
+        <CardContent>
+          <Typography variant="h6">Total Meals of All Users</Typography>
+          <Typography variant="body2">
+            Total Meals:{" "}
+            {totalMealInfo.breakFast / 2 +
+              totalMealInfo.lunch +
+              totalMealInfo.dinner}{" "}
+            | Breakfast: {totalMealInfo.breakFast} | Lunch:{" "}
+            {totalMealInfo.lunch} | Dinner: {totalMealInfo.dinner}
+          </Typography>
+        </CardContent>
+      </Card>
 
       <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerClose}>
         <div>
