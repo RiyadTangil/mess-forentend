@@ -17,6 +17,7 @@ body {
 
 .drawer-content{
   margin-top: 50px;
+  font-size: 14px;
 }
 .card {
   border: 1px solid #eaeaea;
@@ -115,6 +116,7 @@ button:hover {
   background-color: #ffffff;
   margin-top: 20px;
   overflow-y: auto;
+  font-size: 11px;
   
 }
 

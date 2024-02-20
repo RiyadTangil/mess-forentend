@@ -94,17 +94,7 @@ button:hover {
   overflow-x: auto;
 }
 
-.table-card {
-  border: 1px solid #eaeaea;
-  border-radius: 10px;
-  /* width: 70vw; */
-  max-height: 500px; /* Set a maximum height for scrollability */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  background-color: #ffffff;
-  margin-top: 20px;
-  overflow-y: auto;
-}
+
 
 .table-container table {
   width: 100%;

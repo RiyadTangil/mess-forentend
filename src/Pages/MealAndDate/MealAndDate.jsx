@@ -153,7 +153,6 @@ const MealAndDate = () => {
     setRqsId(0);
     toggleDrawer();
   };
-
   const MealInput = (label) => {
     return (
       <>
@@ -173,23 +172,32 @@ const MealAndDate = () => {
       </>
     );
   };
+
   const DrawerContent = () => (
     <div className="drawer-content">
       <div className="card">
-        <h1 className="header">Place Meal and Date</h1>
+        <p className="header">Place Meal and Date</p>
         <p className="date">Date: {date}</p>
         <div className="checkboxes">
           {["breakfast", "lunch", "dinner"].map((label) => MealInput(label))}
         </div>
-        <button
+        <Button
+          variant="outlined"
+          className="cancel-btn"
+          onClick={toggleDrawer}
+        >
+          Cancel
+        </Button>
+        <Button
           className="save-btn"
           onClick={rqsId ? () => handleUpdate() : () => handleSave()}
         >
-          {rqsId ? "Update" : " Save"}
-        </button>
+          {rqsId ? "Update" : "Save"}
+        </Button>
       </div>
     </div>
   );
+
   return (
     <div className="meal-container">
       <Box
@@ -210,7 +218,7 @@ const MealAndDate = () => {
       </Drawer>
 
       <div className="table-container table-card">
-        <h2>Previous Dates</h2>
+        <h2 className="table-header">Previous Dates</h2>
         <table>
           <thead>
             <tr>
@@ -239,7 +247,6 @@ const MealAndDate = () => {
                     disabled={date !== info.date ? true : false}
                     onClick={() => changeRequest(info)}
                   >
-                    {" "}
                     Edit
                   </button>
                 </td>

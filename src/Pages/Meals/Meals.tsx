@@ -140,7 +140,7 @@ const MealsDashboard: React.FC = () => {
     <div>
       <Card sx={{ mb: 1, borderRadius: "16px" }}>
         <CardContent>
-          <Typography variant="h6">আজকে মোট মিল হবে</Typography>
+          <Typography variant="p">আজকে মোট মিল হবে</Typography>
           <Typography variant="body2">
             মোট মিল{" "}
             {todayMealInfo.breakFast / 2 +
@@ -153,13 +153,13 @@ const MealsDashboard: React.FC = () => {
       </Card>
 
       {mealsData?.data.users.map((user) => (
-        <div key={user._id} style={{marginBottom:"8px"}} >
-          <Card style={{ borderRadius: "16px 16px 0px 0px" }}>
-            <CardContent>
+        <div key={user._id} style={{ marginBottom: "8px" }}>
+          <Card style={{ borderRadius: "16px 16px 0px 0px" , }}>
+            <CardContent style={{padding:6}}>
               <Typography variant="h6">{user.name} </Typography>
             </CardContent>
           </Card>
-          <Accordion  style={{ borderRadius: " 0px 0px 16px 16px" }}>
+          <Accordion style={{ borderRadius: " 0px 0px 16px 16px" }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               {calculateTotalMeals(user.meals)}
             </AccordionSummary>
@@ -194,7 +194,7 @@ const MealsDashboard: React.FC = () => {
           </Accordion>
         </div>
       ))}
-      <Card sx={{ mt: 1 ,borderRadius:"16px" }}>
+      <Card sx={{ mt: 1, borderRadius: "16px" }}>
         <CardContent>
           <Typography variant="h6">Total Meals of All Users</Typography>
           <Typography variant="body2">
