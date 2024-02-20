@@ -103,7 +103,7 @@ const BottomNavigation = ({ component }: { component: React.ReactNode }) => {
       /> */}
       <div className="bottom-nav-component">{component}</div>
       <div className="bottom-navigation">
-        <Swiper spaceBetween={0} slidesPerView={3.5}>
+        <Swiper spaceBetween={1} slidesPerView={userRole === "admin" ? 3.5 : 3}>
           {navigationData.map((item, index) =>
             item.for ? (
               <SwiperSlide key={index}>
