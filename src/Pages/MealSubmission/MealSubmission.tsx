@@ -104,12 +104,12 @@ const MealSubmission: React.FC = () => {
               rootDomain + `/meal/${usersWhoseMealsFound[userId]}`,
               {
                 choices: mealChoice,
-                date: formatDate(selectedDate),
+                date:selectedDate,
               }
             );
           } else {
             await axios.post(rootDomain + "/meal/create-meal", {
-              date: formatDate(selectedDate),
+              date:selectedDate,
               choices: mealChoice,
               user: userId,
               mess: messData?._id,
@@ -137,7 +137,7 @@ const MealSubmission: React.FC = () => {
     }
   }
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedDate(event.target.value);
+    setSelectedDate(formatDate(event.target.value));
   };
 
   if (!messData) {
