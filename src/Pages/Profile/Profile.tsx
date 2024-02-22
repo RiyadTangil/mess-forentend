@@ -60,7 +60,16 @@ const Profile: React.FC = () => {
     setLoading(true);
     try {
       // Make API request to update user information
-      await axios.patch(rootDomain + `/users/${userInfo?.userId}`, formData);
+      if (!formData.password) {
+        const { name, number, mess_id } = formData;
+        await axios.patch(rootDomain + `/users/${userInfo?.userId}`, {
+          name,
+          number,
+          mess_id,
+        });
+      } else {
+        await axios.patch(rootDomain + `/users/${userInfo?.userId}`, formData);
+      }
       setUserInfo({ ...userInfo, ...formData });
       setEditing(false);
       toast.success("Profile updated successfully");

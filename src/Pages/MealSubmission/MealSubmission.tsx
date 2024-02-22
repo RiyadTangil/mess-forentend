@@ -104,11 +104,12 @@ const MealSubmission: React.FC = () => {
               rootDomain + `/meal/${usersWhoseMealsFound[userId]}`,
               {
                 choices: mealChoice,
+                date: formatDate(selectedDate),
               }
             );
           } else {
             await axios.post(rootDomain + "/meal/create-meal", {
-              date: selectedDate,
+              date: formatDate(selectedDate),
               choices: mealChoice,
               user: userId,
               mess: messData?._id,
@@ -125,7 +126,16 @@ const MealSubmission: React.FC = () => {
       toast.dismiss();
     }
   };
-
+  function formatDate(inputDate) {
+    const parts = inputDate.split("-");
+    console.log(parts, "parts", inputDate);
+    if (parts.length === 3) {
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    } else {
+      // Handle invalid date format
+      return "Invalid Date";
+    }
+  }
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(event.target.value);
   };

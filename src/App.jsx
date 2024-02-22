@@ -26,7 +26,7 @@ function App() {
           <Route
             path="/users"
             element={<ProtectedRoute component={<Users />} />}
-          />
+          />npm run dev
           <Route
             path="/"
             element={<ProtectedRoute component={<MealAndDate />} />}
