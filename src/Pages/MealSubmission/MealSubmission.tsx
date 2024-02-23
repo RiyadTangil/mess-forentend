@@ -137,6 +137,7 @@ const MealSubmission: React.FC = () => {
     }
   }
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("event.target.value => ",event.target.value);
     setSelectedDate(formatDate(event.target.value));
   };
 
