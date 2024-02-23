@@ -133,7 +133,7 @@ const MealSubmission: React.FC = () => {
       return `${parts[2]}-${parts[1]}-${parts[0]}`;
     } else {
       // Handle invalid date format
-      return `Invalid Date ${parts.length}`+parts;
+      return `Invalid Date ${parts.length}`+"parts"+parts+"inputDate"+inputDate;
     }
   }
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
