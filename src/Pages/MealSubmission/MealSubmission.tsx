@@ -128,12 +128,12 @@ const MealSubmission: React.FC = () => {
   };
   function formatDate(inputDate) {
     const parts = inputDate.split("-");
-    console.log(parts, "parts", inputDate);
+
     if (parts.length === 3) {
       return `${parts[2]}-${parts[1]}-${parts[0]}`;
     } else {
       // Handle invalid date format
-      return "Invalid Date";
+      return `Invalid Date ${parts.length}`;
     }
   }
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
