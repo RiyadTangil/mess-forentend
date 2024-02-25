@@ -127,38 +127,7 @@ const MealSubmission: React.FC = () => {
       toast.dismiss();
     }
   };
-  function dateConverter(inputDate) {
-    const parts = inputDate.split("-");
 
-    if (parts.length === 3) {
-      return `${parts[2]}-${parts[1]}-${parts[0]}`;
-    } else {
-      // Handle invalid date format
-      return (
-        `Invalid Date ${parts.length}` +
-        "parts" +
-        parts +
-        "inputDate" +
-        inputDate
-      );
-    }
-  }
-  function datReverter(inputDate) {
-    const parts = inputDate.split("-");
-
-    if (parts.length === 3) {
-      return `${parts[2]}-${parts[1]}-${parts[0]}`;
-    } else {
-      // Handle invalid date format
-      return (
-        `Invalid Date ${parts.length}` +
-        "parts" +
-        parts +
-        "inputDate" +
-        inputDate
-      );
-    }
-  }
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // console.log("event.target.value => ", event.target.value);
     setSelectedDate(event.target.value);
@@ -207,6 +176,7 @@ const MealSubmission: React.FC = () => {
       <h2>DD==MM{moment(selectedDate, "DD-MM-YYYY").format("MM-DD-YYYY")}</h2>
       <h2>MM{moment(selectedDate).format("MM-DD-YYYY")}</h2>
       <h2>DD{moment(selectedDate).format("DD-MM-YYYY")}</h2>
+      <h2>new Date{moment(new Date()).format("DD-MM-YYYY")}</h2>
       <h2>{selectedDate}</h2>
       <table>
         <thead>
