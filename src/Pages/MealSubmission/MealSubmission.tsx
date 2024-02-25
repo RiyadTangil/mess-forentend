@@ -130,7 +130,7 @@ const MealSubmission: React.FC = () => {
     const parts = inputDate.split("-");
 
     if (parts.length === 3) {
-      return `${parts[1]}-${parts[2]}-${parts[0]}`;
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
     } else {
       // Handle invalid date format
       return (
@@ -146,7 +146,7 @@ const MealSubmission: React.FC = () => {
     const parts = inputDate.split("-");
 
     if (parts.length === 3) {
-      return `${parts[1]}-${parts[2]}-${parts[0]}`;
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
     } else {
       // Handle invalid date format
       return (
