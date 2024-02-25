@@ -6,6 +6,7 @@ import { rootDomain } from "../../API/API";
 
 import ArrowUpwardIcon from "@mui/icons-material/ExpandLess";
 import ArrowDownwardIcon from "@mui/icons-material/ExpandMore";
+import moment from "moment";
 
 interface User {
   _id: string;
@@ -159,8 +160,8 @@ const MealSubmission: React.FC = () => {
     }
   }
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("event.target.value => ", event.target.value);
-    setSelectedDate(dateConverter(event.target.value));
+    // console.log("event.target.value => ", event.target.value);
+    setSelectedDate(moment(event.target.value,"DD-MM-YYYY").format("MM-DD-YYYY"));
   };
 
   if (!messData) {
@@ -201,7 +202,7 @@ const MealSubmission: React.FC = () => {
     <div>
       <input
         type="date"
-        value={datReverter(selectedDate)}
+        value={moment(selectedDate,"MM-DD-YYYY").format("DD-MM-YYYY ")}
         onChange={handleDateChange}
       />
       <h2>{selectedDate}</h2>
