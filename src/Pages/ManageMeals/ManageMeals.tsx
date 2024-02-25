@@ -168,7 +168,7 @@ const ManageMeals: React.FC = () => {
     );
   };
   return (
-    <div>
+    <div style={{fontSize:"12px"}}>
       <input type="date" onChange={handleDateChange} />
       <h2>{selectedDate}</h2>
       <table>
