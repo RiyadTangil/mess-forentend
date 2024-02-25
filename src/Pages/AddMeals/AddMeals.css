@@ -15,7 +15,7 @@ body {
   justify-content: center;
 }
 
-.drawer-content{
+.drawer-content {
   margin-top: 50px;
   font-size: 14px;
 }
@@ -117,7 +117,6 @@ button:hover {
   margin-top: 20px;
   overflow-y: auto;
   font-size: 11px;
-  
 }
 
 table {
@@ -131,8 +130,11 @@ td {
   border: 1px solid #eaeaea;
   padding: 10px;
   text-align: center;
-}
 
+}
+tbody tr:first-child td:first-child {
+  min-width: 100px;
+}
 th {
   background-color: #3498db;
   color: #fff;
