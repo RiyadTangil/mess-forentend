@@ -161,7 +161,7 @@ const MealSubmission: React.FC = () => {
   }
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // console.log("event.target.value => ", event.target.value);
-    setSelectedDate(moment(event.target.value,"DD-MM-YYYY").format("MM-DD-YYYY"));
+    setSelectedDate(event.target.value);
   };
 
   if (!messData) {
@@ -205,6 +205,10 @@ const MealSubmission: React.FC = () => {
         value={moment(selectedDate,"MM-DD-YYYY").format("DD-MM-YYYY ")}
         onChange={handleDateChange}
       />
+      <h2> MM=DD{moment(selectedDate,"MM-DD-YYYY").format("DD-MM-YYYY")}</h2>
+      <h2>DD==MM{moment(selectedDate,"DD-MM-YYYY").format("MM-DD-YYYY")}</h2>
+      <h2>MM{moment(selectedDate).format("MM-DD-YYYY")}</h2>
+      <h2>DD{moment(selectedDate).format("DD-MM-YYYY")}</h2>
       <h2>{selectedDate}</h2>
       <table>
         <thead>
