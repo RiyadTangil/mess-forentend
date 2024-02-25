@@ -4,14 +4,14 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 import "./App.css";
 
-import MealAndDate from "./Pages/MealAndDate/MealAndDate";
+import AddMeals from "./Pages/AddMeals/AddMeals";
 import RegisterPage from "./Pages/RegisterPage/RegisterPage";
 import ProtectedRoute from "./Pages/Auth/ProtectedRoute";
 import Login from "./Pages/Login/Login";
 import { Toaster } from "react-hot-toast";
 import Users from "./Pages/Users/Users";
 import MealsDashboard from "./Pages/Meals/Meals";
-import MealSubmission from "./Pages/MealSubmission/MealSubmission";
+import ManageMeals from "./Pages/ManageMeals/ManageMeals";
 import Profile from "./Pages/Profile/Profile";
 
 function App() {
@@ -26,14 +26,14 @@ function App() {
           <Route
             path="/users"
             element={<ProtectedRoute component={<Users />} />}
-          />npm run dev
+          />
           <Route
             path="/"
-            element={<ProtectedRoute component={<MealAndDate />} />}
+            element={<ProtectedRoute component={<AddMeals />} />}
           />
           <Route
             path="/add-meals"
-            element={<ProtectedRoute component={<MealAndDate />} />}
+            element={<ProtectedRoute component={<AddMeals />} />}
           />
           <Route
             path="/meals-dashboard"
@@ -41,7 +41,7 @@ function App() {
           />
           <Route
             path="/manage-meals"
-            element={<ProtectedRoute component={<MealSubmission />} />}
+            element={<ProtectedRoute component={<ManageMeals />} />}
           />
           <Route
             path="/meals-dashboard"

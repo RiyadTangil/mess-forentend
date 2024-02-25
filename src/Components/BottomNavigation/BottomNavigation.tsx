@@ -12,18 +12,15 @@ import prayerIcon from "../../photos/Newuiphotos/nav bar/navicons/prayerT.svg";
 import specialPrayerIcon from "../../photos/Newuiphotos/nav bar/navicons/otherprayer.svg";
 import eventIcon from "../../photos/Newuiphotos/nav bar/navicons/events.svg";
 import profileIcon from "../../photos/Newuiphotos/nav bar/navicons/profile.svg";
-import AnnouncementIcon from "../../photos/Newuiphotos/nav bar/navicons/announcement.svg";
 import homeIconActive from "../../photos/Newuiphotos/nav bar/navicons/navactiveicons/homeactive.svg";
 import prayerIconActive from "../../photos/Newuiphotos/nav bar/navicons/navactiveicons/prayertactive.svg";
 import specialPrayerIconActive from "../../photos/Newuiphotos/nav bar/navicons/navactiveicons/otherpactive.svg";
 import eventIconActive from "../../photos/Newuiphotos/nav bar/navicons/navactiveicons/eventsactive.svg";
-import AnnouncementIconActive from "../../photos/Newuiphotos/nav bar/navicons/navactiveicons/Announcementactive.svg";
 import Users from "../../Pages/Users/Users";
 import { getMessInfoFromLocalHost } from "../../helperFunctions";
 
 const BottomNavigation = ({ component }: { component: React.ReactNode }) => {
   const [activeTab, setActiveTab] = useState(0);
-  const [tmConOpener, setTmConOpener] = useState(false);
   const [userRole, setUserRole] = useState("");
   const { tab } = useParams();
   useEffect(() => {

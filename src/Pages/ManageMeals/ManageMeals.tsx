@@ -27,7 +27,7 @@ interface MessData {
   meals: Meal[];
 }
 
-const MealSubmission: React.FC = () => {
+const ManageMeals: React.FC = () => {
   const [messData, setMessData] = useState<MessData | null>(null);
   const [usersWhoseMealsFound, setUsersWhoseMealsFound] = useState<
     Record<string, string>
@@ -196,4 +196,4 @@ const MealSubmission: React.FC = () => {
   );
 };
 
-export default MealSubmission;
+export default ManageMeals;

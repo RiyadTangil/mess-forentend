@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import "./MealAndDate.css";
+import "./AddMeals.css";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
@@ -10,7 +10,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 
 import { getMessInfoFromLocalHost, getToday } from "../../helperFunctions";
 import toast from "react-hot-toast";
-const MealAndDate = () => {
+const AddMeals = () => {
   const initialChoice = {
     breakfast: 0,
     lunch: 0,
@@ -265,4 +265,4 @@ const MealAndDate = () => {
   );
 };
 
-export default MealAndDate;
+export default AddMeals;
