@@ -202,7 +202,7 @@ const MealSubmission: React.FC = () => {
     <div>
       <input
         type="date"
-        value={moment(selectedDate,"MM-DD-YYYY").format("DD-MM-YYYY ")}
+        value={selectedDate}
         onChange={handleDateChange}
       />
       <h2> MM=DD{moment(selectedDate,"MM-DD-YYYY").format("DD-MM-YYYY")}</h2>
