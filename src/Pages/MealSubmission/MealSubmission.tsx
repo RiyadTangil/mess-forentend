@@ -104,12 +104,12 @@ const MealSubmission: React.FC = () => {
               rootDomain + `/meal/${usersWhoseMealsFound[userId]}`,
               {
                 choices: mealChoice,
-                date:selectedDate,
+                date: selectedDate,
               }
             );
           } else {
             await axios.post(rootDomain + "/meal/create-meal", {
-              date:selectedDate,
+              date: selectedDate,
               choices: mealChoice,
               user: userId,
               mess: messData?._id,
@@ -126,19 +126,41 @@ const MealSubmission: React.FC = () => {
       toast.dismiss();
     }
   };
-  function formatDate(inputDate) {
+  function dateConverter(inputDate) {
     const parts = inputDate.split("-");
 
     if (parts.length === 3) {
       return `${parts[2]}-${parts[1]}-${parts[0]}`;
     } else {
       // Handle invalid date format
-      return `Invalid Date ${parts.length}`+"parts"+parts+"inputDate"+inputDate;
+      return (
+        `Invalid Date ${parts.length}` +
+        "parts" +
+        parts +
+        "inputDate" +
+        inputDate
+      );
+    }
+  }
+  function datReverter(inputDate) {
+    const parts = inputDate.split("-");
+
+    if (parts.length === 3) {
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    } else {
+      // Handle invalid date format
+      return (
+        `Invalid Date ${parts.length}` +
+        "parts" +
+        parts +
+        "inputDate" +
+        inputDate
+      );
     }
   }
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("event.target.value => ",event.target.value);
-    setSelectedDate(formatDate(event.target.value));
+    console.log("event.target.value => ", event.target.value);
+    setSelectedDate(dateConverter(event.target.value));
   };
 
   if (!messData) {
@@ -177,7 +199,11 @@ const MealSubmission: React.FC = () => {
   };
   return (
     <div>
-      <input type="date" value={selectedDate} onChange={handleDateChange} />
+      <input
+        type="date"
+        value={datReverter(selectedDate)}
+        onChange={handleDateChange}
+      />
       <h2>{selectedDate}</h2>
       <table>
         <thead>
