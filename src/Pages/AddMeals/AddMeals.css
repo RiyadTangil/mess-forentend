@@ -116,7 +116,7 @@ button:hover {
   background-color: #ffffff;
   margin-top: 20px;
   overflow-y: auto;
-  font-size: 11px;
+  font-size: 10px;
 }
 
 table {
@@ -133,7 +133,7 @@ td {
 
 }
 tbody tr:first-child td:first-child {
-  min-width: 100px;
+  min-width: 80px;
 }
 th {
   background-color: #3498db;
