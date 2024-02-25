@@ -176,7 +176,7 @@ const MealSubmission: React.FC = () => {
       <h2>DD==MM{moment(selectedDate, "DD-MM-YYYY").format("MM-DD-YYYY")}</h2>
       <h2>MM{moment(selectedDate).format("MM-DD-YYYY")}</h2>
       <h2>DD{moment(selectedDate).format("DD-MM-YYYY")}</h2>
-      <h2>new Date{moment(new Date()).format("DD-MM-YYYY")}</h2>
+      <h2>new Date{moment(new Date(selectedDate)).format("DD-MM-YYYY")}</h2>
       <h2>{selectedDate}</h2>
       <table>
         <thead>
