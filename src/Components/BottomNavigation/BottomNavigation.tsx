@@ -16,6 +16,7 @@ import homeIconActive from "../../photos/Newuiphotos/nav bar/navicons/navactivei
 import prayerIconActive from "../../photos/Newuiphotos/nav bar/navicons/navactiveicons/prayertactive.svg";
 import specialPrayerIconActive from "../../photos/Newuiphotos/nav bar/navicons/navactiveicons/otherpactive.svg";
 import eventIconActive from "../../photos/Newuiphotos/nav bar/navicons/navactiveicons/eventsactive.svg";
+import announcement from "../../photos/Newuiphotos/nav bar/navicons/announcement.svg";
 import Users from "../../Pages/Users/Users";
 import { getMessInfoFromLocalHost } from "../../helperFunctions";
 
@@ -67,6 +68,14 @@ const BottomNavigation = ({ component }: { component: React.ReactNode }) => {
       for: true,
       activeIcon: eventIconActive,
       icon: eventIcon,
+      content: <Users />,
+    },
+    {
+      label: "Expenditure",
+      route: "/expenditure",
+      for: true,
+      activeIcon: announcement,
+      icon: announcement,
       content: <Users />,
     },
     {

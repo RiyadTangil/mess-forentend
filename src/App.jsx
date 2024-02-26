@@ -13,6 +13,7 @@ import Users from "./Pages/Users/Users";
 import MealsDashboard from "./Pages/Meals/Meals";
 import ManageMeals from "./Pages/ManageMeals/ManageMeals";
 import Profile from "./Pages/Profile/Profile";
+import Expenditures from "./Pages/Expenditures/Expenditures";
 
 function App() {
   return (
@@ -50,6 +51,10 @@ function App() {
           <Route
             path="/profile"
             element={<ProtectedRoute component={<Profile />} />}
+          />
+          <Route
+            path="/expenditure"
+            element={<ProtectedRoute component={<Expenditures />} />}
           />
         </Routes>
       </Router>

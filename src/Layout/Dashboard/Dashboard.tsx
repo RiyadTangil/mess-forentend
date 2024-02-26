@@ -109,6 +109,7 @@ export default function Dashboard() {
     { text: "Starred", path: "/users", icon: <MailIcon /> },
     { text: "Meals Dashboard", path: "/meals-dashboard", icon: <MailIcon /> },
     { text: "Profile", path: "/profile", icon: <MailIcon /> },
+    { text: "Expenditure", path: "/expenditure", icon: <InboxIcon /> },
     // { text: 'Drafts', path: '/drafts', icon: <DraftsIcon /> },
   ];
   return (

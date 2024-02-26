@@ -11,11 +11,12 @@ import {
   TableCell,
   TableBody,
   Paper,
+  IconButton,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  IconButton,
+  Box,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -23,6 +24,7 @@ import AddIcon from "@material-ui/icons/Add";
 import toast from "react-hot-toast";
 import { rootDomain } from "../../API/API";
 import { getToday } from "../../helperFunctions";
+
 interface DepositWithdraw {
   date: string;
   amount: number;
@@ -48,6 +50,8 @@ const Users: React.FC = () => {
   const [deposit, setDeposit] = useState<DepositWithdraw[]>([]);
   const [withdraw, setWithdraw] = useState<DepositWithdraw[]>([]);
   const [today] = useState(getToday());
+  const [isDeleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<UserData | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -93,15 +97,31 @@ const Users: React.FC = () => {
     setDrawerOpen(true);
   };
 
-  const handleDeleteUser = async (userId: string) => {
-    try {
-      await axios.delete(rootDomain + `/users/${userId}`);
-      const updatedUsers = userData.filter((user) => user._id !== userId);
-      setUserData(updatedUsers);
-      toast.success("User deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting user", error);
-      toast.error("Error deleting user. Please try again.");
+  const confirmDeleteUser = (user: UserData) => {
+    setUserToDelete(user);
+    setDeleteConfirmationOpen(true);
+  };
+
+  const cancelDeleteUser = () => {
+    setUserToDelete(null);
+    setDeleteConfirmationOpen(false);
+  };
+
+  const deleteUser = async () => {
+    if (userToDelete) {
+      try {
+        await axios.delete(rootDomain + `/users/${userToDelete._id}`);
+        const updatedUsers = userData.filter(
+          (user) => user._id !== userToDelete._id
+        );
+        setUserData(updatedUsers);
+        toast.success("User deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting user", error);
+        toast.error("Error deleting user. Please try again.");
+      } finally {
+        cancelDeleteUser(); // Close the confirmation modal
+      }
     }
   };
 
@@ -246,7 +266,6 @@ const Users: React.FC = () => {
               <TableRow key={user._id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.number}</TableCell>
-
                 <TableCell>
                   {/* Calculate the total deposited amount */}
                   {user.deposit?.reduce(
@@ -259,12 +278,14 @@ const Users: React.FC = () => {
                     ) || 0)}
                 </TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleEditUser(user)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => handleDeleteUser(user._id)}>
-                    <DeleteIcon />
-                  </IconButton>
+                  <Box>
+                    <IconButton style={{width:"45%" }} onClick={() => handleEditUser(user)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton style={{width:"45%"}} onClick={() => confirmDeleteUser(user)}>
+                      <DeleteIcon style={{ color: "red" }} />
+                    </IconButton>
+                  </Box>
                 </TableCell>
               </TableRow>
             ))}
@@ -355,79 +376,31 @@ const Users: React.FC = () => {
           </div>
         </div>
       </Drawer>
+
+      {/* Confirmation modal for deleting user */}
+      <Dialog
+        open={isDeleteConfirmationOpen}
+        onClose={cancelDeleteUser}
+        aria-labelledby="delete-user-dialog-title"
+        aria-describedby="delete-user-dialog-description"
+      >
+        <DialogTitle id="delete-user-dialog-title">
+          Confirm Deletion
+        </DialogTitle>
+        <DialogContent>
+          <p>Are you sure you want to delete this user?</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelDeleteUser} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={deleteUser} color="primary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
 
 export default Users;
-
-//another design fo drawer
-
-//     <Drawer anchor="right" open={isDrawerOpen} onClose={handleDrawerClose}>
-//   <div style={{ padding: "20px", width: "400px", display: "flex", flexDirection: "column" }}>
-//     <h2>{editingUser ? "Edit User" : "Add User"}</h2>
-//     <TextField
-//       label="Name"
-//       variant="outlined"
-//       fullWidth
-//       margin="normal"
-//       value={name}
-//       onChange={(e) => setName(e.target.value)}
-//     />
-//     <TextField
-//       label="Number"
-//       variant="outlined"
-//       fullWidth
-//       margin="normal"
-//       value={number}
-//       onChange={(e) => setNumber(e.target.value)}
-//     />
-//     <div style={{ display: "flex", justifyContent: "space-between" }}>
-//       <div>
-//         {deposit.map((item, index) => (
-//           <div key={index}>
-//             <TextField
-//               label={`Deposit Amount (${item.date})`}
-//               variant="outlined"
-//               margin="normal"
-//               value={item.amount}
-//               onChange={(e) => handleDepositChange(index, "amount", e.target.value)}
-//             />
-//           </div>
-//         ))}
-//         <Button
-//           variant="contained"
-//           color="primary"
-//           onClick={() => addDepositOrWithdraw("deposit")}
-//         >
-//           Add Deposit
-//         </Button>
-//       </div>
-//       <div>
-//         {withdraw.map((item, index) => (
-//           <div key={index}>
-//             <TextField
-//               label={`Withdraw Amount (${item.date})`}
-//               variant="outlined"
-//               margin="normal"
-//               value={item.amount}
-//               onChange={(e) => handleWithdrawChange(index, "amount", e.target.value)}
-//             />
-//           </div>
-//         ))}
-//         <Button
-//           variant="contained"
-//           color="primary"
-//           onClick={() => addDepositOrWithdraw("withdraw")}
-//         >
-//           Add Withdraw
-//         </Button>
-//       </div>
-//     </div>
-//     <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-//       <Button variant="contained" color="primary" onClick={handleSubmit}>
-//         {editingUser ? "Update" : "Add"}
-//       </Button>
-//     </div>
-//   </div>
-// </Drawer>
