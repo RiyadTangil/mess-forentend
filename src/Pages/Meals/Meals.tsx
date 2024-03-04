@@ -237,9 +237,9 @@ const MealsDashboard: React.FC = () => {
             {totalMealInfo.lunch} | Dinner: {totalMealInfo.dinner}
             <Button
               size="small"
-              variant="outlined"
+             // variant="outlined"
               onClick={handleMealRate}
-              // variant="text"
+              variant="text"
               disabled={loading}
               endIcon={<UpdateIcon />}
             >
