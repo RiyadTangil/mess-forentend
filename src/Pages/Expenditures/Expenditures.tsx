@@ -127,7 +127,7 @@ const Expenditures: React.FC = () => {
           open={isDrawerOpen}
           onClose={() => setDrawerOpen(false)}
         >
-          <Box sx={{ width: 300, padding: 2 }}>
+          <Box sx={{ width: "70vw", padding: 2 }}>
             <h2>Add Expenditure</h2>
             <Autocomplete
               value={selectedUser}
@@ -184,7 +184,7 @@ const Expenditures: React.FC = () => {
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              width: 400,
+              width: "80vw",
               bgcolor: "background.paper",
               boxShadow: 24,
               p: 4,
@@ -212,9 +212,11 @@ const Expenditures: React.FC = () => {
                 })
               }
             />
-            <Button variant="contained" onClick={handleUpdate}>
-              Update
-            </Button>
+            <Box display="flex" justifyContent="center" mt={2}>
+              <Button variant="contained" onClick={handleUpdate}>
+                Update
+              </Button>
+            </Box>
           </Box>
         </Modal>
         <Divider orientation="vertical" flexItem />
