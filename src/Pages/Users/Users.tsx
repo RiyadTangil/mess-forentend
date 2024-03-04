@@ -17,6 +17,7 @@ import {
   DialogContent,
   DialogActions,
   Box,
+  Checkbox,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -24,6 +25,7 @@ import AddIcon from "@material-ui/icons/Add";
 import toast from "react-hot-toast";
 import { rootDomain } from "../../API/API";
 import { getToday } from "../../helperFunctions";
+import { FormControlLabel } from "@mui/material";
 
 interface DepositWithdraw {
   date: string;
@@ -52,6 +54,7 @@ const Users: React.FC = () => {
   const [today] = useState(getToday());
   const [isDeleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<UserData | null>(null);
+  const [makeAdmin, setMakeAdmin] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -84,6 +87,7 @@ const Users: React.FC = () => {
     setWithdraw([]);
     setEditingUser(null);
     setDrawerOpen(true);
+    setMakeAdmin(false);
   };
 
   const handleEditUser = (user: UserData) => {
@@ -95,6 +99,7 @@ const Users: React.FC = () => {
 
     setEditingUser(user);
     setDrawerOpen(true);
+    setMakeAdmin(user.role === "user" ? false : true);
   };
 
   const confirmDeleteUser = (user: UserData) => {
@@ -127,6 +132,7 @@ const Users: React.FC = () => {
 
   const handleDrawerClose = () => {
     setDrawerOpen(false);
+    setMakeAdmin(false);
     setName("");
     setRole("");
     setNumber("");
@@ -159,7 +165,7 @@ const Users: React.FC = () => {
     const requestData = {
       name,
       number,
-      role: role ? role : "user",
+      role: makeAdmin ? makeAdmin : role ? role : "user",
       password: number,
       mess_id,
       deposit: filteredDeposit,
@@ -279,10 +285,16 @@ const Users: React.FC = () => {
                 </TableCell>
                 <TableCell>
                   <Box>
-                    <IconButton style={{width:"45%" }} onClick={() => handleEditUser(user)}>
+                    <IconButton
+                      style={{ width: "45%" }}
+                      onClick={() => handleEditUser(user)}
+                    >
                       <EditIcon />
                     </IconButton>
-                    <IconButton style={{width:"45%"}} onClick={() => confirmDeleteUser(user)}>
+                    <IconButton
+                      style={{ width: "45%" }}
+                      onClick={() => confirmDeleteUser(user)}
+                    >
                       <DeleteIcon style={{ color: "red" }} />
                     </IconButton>
                   </Box>
@@ -295,7 +307,7 @@ const Users: React.FC = () => {
 
       <Drawer anchor="right" open={isDrawerOpen} onClose={handleDrawerClose}>
         <div style={{ padding: "20px", width: "70vw" }}>
-          <h2>{editingUser ? "Edit User" : "Add User"}</h2>
+          <h6>{editingUser ? "Edit User" : "Add User"}</h6>
           <TextField
             label="Name"
             variant="outlined"
@@ -311,6 +323,17 @@ const Users: React.FC = () => {
             margin="normal"
             value={number}
             onChange={(e) => setNumber(e.target.value)}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={makeAdmin}
+                onChange={(e) => setMakeAdmin(e.target.checked)}
+                name="makeAdmin"
+                color="primary"
+              />
+            }
+            label="Make Admin"
           />
           <div
             style={{

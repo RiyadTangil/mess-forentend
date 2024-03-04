@@ -17,18 +17,24 @@ import {
   Snackbar,
   Typography,
 } from "@mui/material";
+import UpdateIcon from "@mui/icons-material/Update";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import EditIcon from "@mui/icons-material/Edit";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { rootDomain } from "../../API/API";
 import { getMessInfoFromLocalHost, getToday } from "../../helperFunctions";
-import { MealsApiResponse, UserInfo } from "../../Types";
+import { Expenditure, MealsApiResponse, UserInfo } from "../../Types";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const MealsDashboard: React.FC = () => {
   const [mealsData, setMealsData] = useState<MealsApiResponse | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [messInfo, setMessInfo] = useState(getMessInfoFromLocalHost());
   const [selectedUser, setSelectedUser] = useState<UserInfo | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [expenditures, setExpenditures] = useState<Expenditure[]>([]);
   const [todayMealInfo, setTodayMealInfo] = useState({
     breakFast: 0,
     lunch: 0,
@@ -44,13 +50,11 @@ const MealsDashboard: React.FC = () => {
   useEffect(() => {
     const fetchMealsData = async () => {
       try {
-        const messInfo = getMessInfoFromLocalHost();
         const response = await fetch(
           rootDomain + "/meal/getMealsByMessId/" + messInfo.mess_id
         );
         const data: MealsApiResponse = await response.json();
         setMealsData(data);
-        console.log("data?.data?.users => ", data?.data?.users);
         calculateTodayMeals(data?.data?.users);
       } catch (error) {
         console.error("Error fetching meals data:", error);
@@ -136,6 +140,32 @@ const MealsDashboard: React.FC = () => {
       dinner: allUsersDinner,
     });
   };
+  const handleMealRate = async () => {
+    setLoading(true);
+    console.log(mealsData?.data);
+    const totalExpenditure = mealsData?.data.expenditures.reduce(
+      (total, exp) => total + exp.amount,
+      0
+    );
+    const totalMeal =
+      totalMealInfo.breakFast / 2 + totalMealInfo.lunch + totalMealInfo.dinner;
+    try {
+      const response = await axios.patch(
+        rootDomain + "/mess/" + messInfo.mess_id,
+        {
+          meal_rate: +(totalExpenditure / totalMeal).toFixed(2),
+        }
+      );
+      toast.success("Data updated successfully");
+      console.log("Response:", response.data);
+    } catch (error) {
+      console.error("Error updating data:", error);
+      toast.error("Failed to update data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <Card sx={{ mb: 1, borderRadius: "16px" }}>
@@ -154,8 +184,8 @@ const MealsDashboard: React.FC = () => {
 
       {mealsData?.data.users.map((user) => (
         <div key={user._id} style={{ marginBottom: "8px" }}>
-          <Card style={{ borderRadius: "16px 16px 0px 0px" , }}>
-            <CardContent style={{padding:6}}>
+          <Card style={{ borderRadius: "16px 16px 0px 0px" }}>
+            <CardContent style={{ padding: 6 }}>
               <Typography variant="h6">{user.name} </Typography>
             </CardContent>
           </Card>
@@ -196,7 +226,8 @@ const MealsDashboard: React.FC = () => {
       ))}
       <Card sx={{ mt: 1, borderRadius: "16px" }}>
         <CardContent>
-          <Typography variant="h6">Total Meals of All Users</Typography>
+          <Typography variant="h6">Total Meals of All Users </Typography>
+
           <Typography variant="body2">
             Total Meals:{" "}
             {totalMealInfo.breakFast / 2 +
@@ -204,6 +235,16 @@ const MealsDashboard: React.FC = () => {
               totalMealInfo.dinner}{" "}
             | Breakfast: {totalMealInfo.breakFast} | Lunch:{" "}
             {totalMealInfo.lunch} | Dinner: {totalMealInfo.dinner}
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={handleMealRate}
+              // variant="text"
+              disabled={loading}
+              endIcon={<UpdateIcon />}
+            >
+              Meal Rate {mealsData?.data?.meal_rate}
+            </Button>
           </Typography>
         </CardContent>
       </Card>

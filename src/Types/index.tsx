@@ -21,3 +21,9 @@ export interface MealsApiResponse {
     users: UserInfo[];
   };
 }
+export interface Expenditure {
+  _id: string;
+  desc: string;
+  amount: number;
+  user: { name: string };
+}

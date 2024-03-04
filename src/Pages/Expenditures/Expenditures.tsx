@@ -9,6 +9,7 @@ import { Box, Divider } from "@mui/material";
 import toast from "react-hot-toast";
 import { getMessInfoFromLocalHost } from "../../helperFunctions";
 import { rootDomain } from "../../API/API";
+import { Expenditure } from "../../Types";
 
 interface User {
   _id: string;
@@ -16,12 +17,7 @@ interface User {
   id: string;
 }
 
-interface Expenditure {
-  _id: string;
-  desc: string;
-  amount: number;
-  user: { name: string };
-}
+
 
 const Expenditures: React.FC = () => {
   const [expenditures, setExpenditures] = useState<Expenditure[]>([]);
@@ -30,12 +26,12 @@ const Expenditures: React.FC = () => {
   const [desc, setDesc] = useState("");
   const [amount, setAmount] = useState("");
   const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [messInfo, setMessInfo] = useState(getMessInfoFromLocalHost());
   const [selectedExpenditure, setSelectedExpenditure] =
     useState<Expenditure | null>(null);
   const [isModalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    const messInfo = getMessInfoFromLocalHost();
     const fetchExpenditures = async () => {
       try {
         const response = await axios.get(
@@ -59,7 +55,7 @@ const Expenditures: React.FC = () => {
           desc,
           amount: +amount,
           user: selectedUser?.id,
-          mess: "65d39197e6b84074f4a52c3e", // Hardcoded for now, replace with actual mess ID
+          mess: messInfo.mess_id, // Hardcoded for now, replace with actual mess ID
         }
       );
       toast.success("Expenditure submitted successfully");
